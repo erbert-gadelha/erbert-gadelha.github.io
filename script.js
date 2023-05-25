@@ -1,8 +1,11 @@
 //import Moviment from "./scripts/Moviment.js";
 //import Input from "./scripts/Input.js";
 
-document.querySelector('.t1').style.display = (!navigator.userAgent.includes("Android")?"flex":"none");
-document.querySelector('.t2').style.display = ( navigator.userAgent.includes("Android")?"flex":"none");
+if(navigator.userAgent.includes("Android")) {
+    document.getElementById('game').style.display = 'none';
+    document.querySelector('.tutorial').style.display = 'none';
+}
+
 
 class Input {
     
@@ -348,12 +351,12 @@ class Moviment {
                     break;
                 case 24:
                     document.getElementById('legenda').textContent = 'o que procuro';
-                    document.querySelector('.inprogress').scrollIntoView({ behavior: 'smooth', block: 'start'});
+                    document.querySelector('.procuro').scrollIntoView({ behavior: 'smooth', block: 'start'});
                     this.cores('pink');
                     break;
                 case 25:
                     document.getElementById('legenda').textContent = `forma\xE7\xE3o`;
-                    document.querySelector('.inprogress').scrollIntoView({ behavior: 'smooth', block: 'start'});
+                    document.querySelector('.formacao').scrollIntoView({ behavior: 'smooth', block: 'start'});
                     //this.showed.style.display = 'flex';
                     this.cores('red');
                     break;
@@ -577,3 +580,136 @@ document.getElementById("change").addEventListener('click', (event) => {
 
     transicao();
 }, false);
+
+
+
+class DragToScroll {
+
+    constructor(element) {
+        this.element = document.getElementById(element);
+        //this.pos = { top: 0, left: 0, x: 0, y: 0 };
+
+        this.#add_eventos();
+    }
+
+    #add_eventos() {
+        let pos = { top: 0, left: 0, x: 0, y: 0 };
+        const ele = this.element;
+        
+        const mouseMoveHandler = function (e) {
+            // How far the mouse has been moved
+            const dx = e.clientX - pos.x;
+            const dy = e.clientY - pos.y;
+        
+            // Scroll the element
+            ele.scrollTop = pos.top - dy;
+            ele.scrollLeft = pos.left - dx;
+        };
+
+        const mouseUpHandler = function () {
+            document.removeEventListener('mousemove', mouseMoveHandler);
+            document.removeEventListener('mouseup', mouseUpHandler);
+        
+            ele.style.cursor = 'grab';
+            ele.style.removeProperty('user-select');
+        };
+        
+        const mouseDownHandler = function (e) {
+            pos = {
+                // The current scroll
+                top: ele.scrollTop,
+                left: ele.scrollLeft,
+                // Get the current mouse position
+                x: e.clientX,
+                y: e.clientY,
+            };
+            
+            document.addEventListener('mousemove', mouseMoveHandler);
+            document.addEventListener('mouseup', mouseUpHandler);
+        };
+
+        this.element.addEventListener('mousedown', (event) => mouseDownHandler(event), false);
+
+    }
+}
+
+let drag = new DragToScroll('wasd');
+
+
+let projetos = document.querySelectorAll(".projeto");
+
+
+const projetos_ = ['projeto_isso-e-um-cururu.html', 'projeto_unbeing.html', 'projeto_go-floresta.html', 'projeto_nassau.html'];
+
+for (let index = 0; index < projetos.length; index++) {
+    const element = projetos[index];
+    
+    let moveu;
+
+    element.addEventListener('mousedown', (event) => {
+        moveu = false;
+    }, false);
+
+    element.addEventListener('mousemove', (event) => {
+        moveu = true;
+    }, false);
+
+    element.addEventListener('click', (event) => {
+        const id = 'auxiliar';
+        const filename = 'projeto_go-floresta.html';
+
+        if(!moveu)
+            loadHtml(id, projetos_[index])
+            //readTextFile(filename);
+
+    }, false);
+
+}
+
+function fechar_projeto() {
+    document.getElementById('auxiliar').innerHTML = '';
+}
+
+function reqListener () {
+    const botao_fechar = '<button id="projeto_fechar" onclick="fechar_projeto();">&#10006;</button>';
+    document.getElementById('auxiliar').innerHTML = botao_fechar + this.responseText;
+};
+
+function loadHtml(id, filename) {
+    console.log(`[${id}][${filename}]`);
+
+    //return;
+
+    let xhttp;
+    let element = document.getElementById(id);
+    let file = filename;
+
+    //element.innerHTML = '<div> <img style="background-image: url(images/projetos/a_promessa_de_nassau_1-banner.png)" width="100%" height="250px"> <h1>A Promessa de Nassau</h1> <span> Contextualizado no famigerado "voo do boi", com mecanicas inspirados em <i>Burrito Bizom</i>, A Promessa de Nassau foi um jogo concebido e produzido durante uma <b>gameJam de 48 horas</b> <br><br> <a href="https://github.com/erbert-gadelha/a-promessa-de-nassau" target="_blank">repositorio do jogo</a> <br><br> Fiquei responsavel pela programacao e organizacao. </span> <h5 class="ferramentas"> <svg width="100" height="100"> <image xlink:href="images/projetos/logos/c-sharp-logo.svg" width="90" height="90"/> </svg> <svg width="120" height="100"> <image xlink:href="images/projetos/logos/unity-logo.svg" width="120" height="90"/> </svg> </h5> </div>';
+
+    if(file) {
+        xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange == function() {
+            if(this.readyState == 4) {
+                if(this.status == 200) {
+                    element.innerHTML = this.responseText;
+                    console.log('[4 & 200]');
+                } else if(this.status == 404) {
+                    element.innerHTML = "<h1>Page not Found. :c</h1>";
+                    console.log('[4 & 404]');
+                }else {
+                    console.log(`[apenas 4]\n${this.responseText}}`);
+                }
+            } else {
+                console.log('[!= 4]');
+            }
+
+        }
+        xhttp.onload = reqListener;
+        xhttp.open("get", file, true);
+        xhttp.send();
+
+        //console.log('vewio ate o fim');
+        return;
+    }
+}
+
