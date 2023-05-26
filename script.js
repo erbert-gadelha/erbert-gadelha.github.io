@@ -356,7 +356,7 @@ class Moviment {
                     break;
                 case 25:
                     document.getElementById('legenda').textContent = `forma\xE7\xE3o`;
-                    document.querySelector('.formacao').scrollIntoView({ behavior: 'smooth', block: 'start'});
+                    document.querySelector('.formacoes').scrollIntoView({ behavior: 'smooth', block: 'start'});
                     //this.showed.style.display = 'flex';
                     this.cores('red');
                     break;

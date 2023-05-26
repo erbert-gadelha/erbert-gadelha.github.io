@@ -46,8 +46,9 @@ html {
 body {
   display: flex;
   flex-direction: row;
+  overflow: hidden;
   height: 100vh;
-  width: 100vw;
+  max-width: 100vw;
   overscroll-behavior: contain;
 }
 
@@ -511,7 +512,7 @@ body {
   text-justify: inter-word;
 }
 .container .textos .info div {
-  margin-top: 40px;
+  margin: 40px;
   display: flex;
   gap: 60px;
 }
@@ -627,13 +628,38 @@ body {
   text-align: center;
   text-transform: capitalize;
 }
-.container .textos .formacao {
-  display: flex;
-  background-color: pink;
-  gap: 25px;
+.container .textos .formacoes {
+  display: block;
+  min-height: 0px;
+  padding-bottom: 60px;
 }
-.container .textos .formacao h2 {
+.container .textos .formacoes #formacao_header {
+  font-size: 2em;
+  padding-top: 20px;
+  padding-bottom: 20px;
+  width: 100%;
   text-align: center;
+  text-transform: capitalize;
+}
+.container .textos .formacoes #qwert {
+  display: flex;
+  gap: 25px;
+  width: 100%;
+  justify-content: center;
+  flex-direction: row;
+}
+.container .textos .formacoes #qwert .formacao {
+  background-color: var(--whitesmoke);
+  padding: 10px;
+  border: var(--light-grey) 1px solid;
+  max-width: 420px;
+  width: 40%;
+  height: 120px;
+  border-radius: 10px;
+  -webkit-border-radius: 10px;
+  -moz-border-radius: 10px;
+  -ms-border-radius: 10px;
+  -o-border-radius: 10px;
 }
 .container .textos .procuro {
   background-color: plum;
@@ -657,6 +683,35 @@ body {
 }
 .container .textos .custom-shape-divider-top-1684351914 .shape-fill {
   fill: #444444;
+}
+
+.redesocial {
+  fill: #1B77F3;
+}
+
+.redesocial:hover {
+  fill: #166ad8;
+  transform: scale(1.05);
+  -webkit-transform: scale(1.05);
+  -moz-transform: scale(1.05);
+  -ms-transform: scale(1.05);
+  -o-transform: scale(1.05);
+}
+
+.separador {
+  max-width: 100%;
+  padding-left: 10px;
+  padding-right: 20px;
+}
+.separador h1 {
+  background-color: var(--light-grey);
+  width: 100%;
+  height: 10px;
+  border-radius: 100px;
+  -webkit-border-radius: 100px;
+  -moz-border-radius: 100px;
+  -ms-border-radius: 100px;
+  -o-border-radius: 100px;
 }
 
 .colapse {
@@ -714,7 +769,7 @@ body {
   content: "";
   width: 5px;
   background-color: var(--deep-grey);
-  height: 500vh;
+  height: 600vh;
   position: absolute;
   right: 0;
 }
@@ -762,5 +817,20 @@ body {
   }
   .tutorial {
     background-color: white !important;
+  }
+  /*#qwert {
+      display: flex;
+      gap: 25px;
+      width: 100%;
+      justify-content: center;
+      flex-direction: row;
+  }*/
+  #qwert {
+    flex-direction: column !important;
+    justify-content: center;
+    align-items: center;
+  }
+  #qwert .formacao {
+    width: 85% !important;
   }
 }/*# sourceMappingURL=style.css.map */
