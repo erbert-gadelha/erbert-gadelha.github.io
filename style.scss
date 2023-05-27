@@ -67,13 +67,8 @@ body {
     align-items: center;
     flex-direction: column;
     justify-content: center;
-    transition: 400ms ease-out all;
-    -webkit-transition: 400ms ease-out all;
-    -moz-transition: 400ms ease-out all;
-    -ms-transition: 400ms ease-out all;
-    -o-transition: 400ms ease-out all;
-    h1
-{
+    
+    h1 {
         padding-top: 20px;
     font-size: larger;
     color: white;
@@ -473,7 +468,11 @@ body {
     overflow-x: hidden;
     overflow-y: auto;
 
-    outline: yellow solid 1px;
+    //outline: yellow solid 1px;
+    //back
+    //background-image: url('data:image/svg+xml,%3Csvg width="52" height="26" viewBox="0 0 52 26" xmlns="http://www.w3.org/2000/svg"%3E%3Cg fill="none" fill-rule="evenodd"%3E%3Cg fill="%239C92AC" fill-opacity="0.1"%3E%3Cpath d="M10 10c0-2.21-1.79-4-4-4-3.314 0-6-2.686-6-6h2c0 2.21 1.79 4 4 4 3.314 0 6 2.686 6 6 0 2.21 1.79 4 4 4 3.314 0 6 2.686 6 6 0 2.21 1.79 4 4 4v2c-3.314 0-6-2.686-6-6 0-2.21-1.79-4-4-4-3.314 0-6-2.686-6-6zm25.464-1.95l8.486 8.486-1.414 1.414-8.486-8.486 1.414-1.414z" /%3E%3C/g%3E%3C/g%3E%3C/svg%3E');
+
+    
 
     .textos {
         display: flex;
@@ -492,11 +491,16 @@ body {
     
         //overflow-x: hidden;
         //overflow-y: auto;
+        background-image: url('data:image/svg+xml,%3Csvg width="52" height="26" viewBox="0 0 52 26" xmlns="http://www.w3.org/2000/svg"%3E%3Cg fill="none" fill-rule="evenodd"%3E%3Cg fill="%239C92AC" fill-opacity="0.1"%3E%3Cpath d="M10 10c0-2.21-1.79-4-4-4-3.314 0-6-2.686-6-6h2c0 2.21 1.79 4 4 4 3.314 0 6 2.686 6 6 0 2.21 1.79 4 4 4 3.314 0 6 2.686 6 6 0 2.21 1.79 4 4 4v2c-3.314 0-6-2.686-6-6 0-2.21-1.79-4-4-4-3.314 0-6-2.686-6-6zm25.464-1.95l8.486 8.486-1.414 1.414-8.486-8.486 1.414-1.414z" /%3E%3C/g%3E%3C/g%3E%3C/svg%3E');
 
-        #gradiente {
-            height: 200px;
-            background: linear-gradient(180deg, rgba(115,213,223,1) 0%, rgba(255,255,255,1) 100%);
-        }
+
+        /*#gradiente {
+            z-index: 2;
+            height: 300px;
+            margin-top: -10px;
+            background: linear-gradient(180deg, var(--deep-grey) 0%, rgb(171, 247, 255) 50%, transparent 100%);
+        }*/
+        /*
         #gradiente::after {
             content: "";
             display: flex;
@@ -504,7 +508,7 @@ body {
             height: 10px;
             width: 100%;
             background: var(--medium-grey);
-        }
+        }*/
         
         section {
             min-height: 100vh;
@@ -590,10 +594,16 @@ body {
         .info {
             overflow-y: auto;
 
-            margin-top: -70PX;
+            //margin-top: -70PX;
             padding-top: 10px;
             //padding-bottom: 200px;
 
+            //background-color: #ffffff;
+            //background-color: #ffffff;
+            //z-index: 0;
+            
+
+            //background-image: url('data:image/svg+xml,%3Csvg width="52" height="26" viewBox="0 0 52 26" xmlns="http://www.w3.org/2000/svg"%3E%3Cg fill="none" fill-rule="evenodd"%3E%3Cg fill="%239C92AC" fill-opacity="0.1"%3E%3Cpath d="M10 10c0-2.21-1.79-4-4-4-3.314 0-6-2.686-6-6h2c0 2.21 1.79 4 4 4 3.314 0 6 2.686 6 6 0 2.21 1.79 4 4 4 3.314 0 6 2.686 6 6 0 2.21 1.79 4 4 4v2c-3.314 0-6-2.686-6-6 0-2.21-1.79-4-4-4-3.314 0-6-2.686-6-6zm25.464-1.95l8.486 8.486-1.414 1.414-8.486-8.486 1.414-1.414z" /%3E%3C/g%3E%3C/g%3E%3C/svg%3E');
 
             img {
                 height: 200px;
@@ -806,14 +816,12 @@ body {
                 text-align: center;
                 text-transform: capitalize;
             }
+            
         }
 
         .formacoes {
             display: block;
             min-height: 0px;
-            //align-items: start;
-            //padding-top: 20px ;
-            //justify-content: start;
             padding-bottom: 60px;
 
             #formacao_header {
@@ -849,37 +857,79 @@ body {
             }
         }
 
-        .procuro {
-            background-color: plum;
+        .skills {
+            min-height: 0px;
+            padding-bottom: 50px;
+            //background-color: plum;
+
+            #skills_header {
+                font-size: 2em;
+                padding: 20px;
+                width: 100%;
+                text-align: center;
+                text-transform: capitalize;
+            }
+
+            h2 {
+                padding: 20px;
+                padding-top: 30px;
+            }
+
+            #div_skills {
+
+                display: block;
+                width: 100%;
+                //background-color: #1b79f333;
+
+                .abud {
+                    display: flex;
+                    //background-color: #fc4a2b33;
+                    
+                    justify-content: center;
+                    align-items: center;
+                    flex-direction: row;
+
+                    
+                    flex-wrap: wrap;
+
+                    gap: 10px;
+
+                }
+
+                .skill {
+                    display: flex;
+
+                    justify-content: center;
+                    align-items: center;
+                    flex-direction: column;
+
+
+                    height: 200px;
+                    width: 200px;
+                    background-color: var(--whitesmoke);
+                    padding: 10px;
+                    border: var(--light-grey) 1px solid;
+                    
+
+                    border-radius: 10px;
+                    -webkit-border-radius: 10px;
+                    -moz-border-radius: 10px;
+                    -ms-border-radius: 10px;
+                    -o-border-radius: 10px;
+
+                    img {
+                        height: 100px;
+                        width: auto;
+                        //padding: auto;
+                        image-rendering: pixelated;
+                    }
+                }
+            }
         }
         
         .inprogress {
-            //height: 100vh;
-            background-color: #2fcc2f;
-            //border: red 1px solid;
+            background-color: var(--deep-grey);
         }
-
-        .custom-shape-divider-top-1684351914 {
-            margin-top: -5px;
-            width: 100%;
-            overflow: hidden;
-            line-height: 0;
-            transform: rotate(180deg);
-
-            svg {
-                position: relative;
-                display: block;
-                width: calc(100% + 1.3px);
-                height: 164px;
-                transform: rotateY(180deg);
-            }
-            
-            .shape-fill {
-                fill: #444444;
-            }
-        }
-        
-        
     
     }
 }
@@ -899,8 +949,6 @@ body {
 
 .separador {
     max-width: 100%;
-    //height: 10px;
-    //background-color: var(--light-grey);
     padding-left: 10px;
     padding-right: 20px;
 
@@ -945,16 +993,8 @@ body {
         height: 60px;
         width: 35px;
         padding-right: 5px;
-        /*background-color: var(--deep-grey);
-        */background-color: var(--deep-grey);
-        /*background-color: #1B77F3;
-        */border-radius: 0px 1000px 1000px 0px;
-        transition: 150ms all ease-out;
-        -webkit-transition: 150ms all ease-out;
-        -moz-transition: 150ms all ease-out;
-        -ms-transition: 150ms all ease-out;
-        -o-transition: 150ms all ease-out;
-        
+        background-color: var(--deep-grey);
+        border-radius: 0px 1000px 1000px 0px;        
 
         svg > g {
             fill: rgb(255, 255, 255);
@@ -981,55 +1021,19 @@ body {
     }}
 }
 
-.container::after {
+/*.container::after {
     content: "";
     width: 5px;
     background-color: var(--deep-grey);
-    height: 600vh;
+    //height: 600vh;
     position: absolute;
     right: 0;
-}
+}*/
 
 .container::-webkit-scrollbar-track {
     background: var(--deep-grey);
 }
 
-.cortina {
-    position: absolute;
-    display: none;
-    align-items: center;
-    z-index: 5000;
-    background-color: transparent;
-    width: 100vw;
-    height: 100vh;
-    pointer-events: none;
-    flex-direction: column;
-
-    overflow: hidden;
-
-
-    transition: 300ms all ease-in-out;
-    -webkit-transition: 300ms all ease-in-out;
-    -moz-transition: 300ms all ease-in-out;
-    -ms-transition: 300ms all ease-in-out;
-    -o-transition: 300ms all ease-in-out;
-    
-    div {
-        background-color: #000000;
-        width: 100vw;
-        height: 50%;
-    }
-
-    #barra_cima {
-        height: 0px;
-        margin-bottom: 100vh;
-        transition: 300ms all ease-in-out;
-        -webkit-transition: 300ms all ease-in-out;
-        -moz-transition: 300ms all ease-in-out;
-        -ms-transition: 300ms all ease-in-out;
-        -o-transition: 300ms all ease-in-out;
-    }
-}
 
 @media screen and (max-width: 900px) {
 

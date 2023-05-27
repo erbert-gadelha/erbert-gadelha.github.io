@@ -350,8 +350,8 @@ class Moviment {
                     this.cores('green');
                     break;
                 case 24:
-                    document.getElementById('legenda').textContent = 'o que procuro';
-                    document.querySelector('.procuro').scrollIntoView({ behavior: 'smooth', block: 'start'});
+                    document.getElementById('legenda').textContent = 'minhas skills';
+                    document.querySelector('.skills').scrollIntoView({ behavior: 'smooth', block: 'start'});
                     this.cores('pink');
                     break;
                 case 25:
@@ -499,7 +499,7 @@ class Moviment {
             if(window.innerWidth > 900) 
                 aux1.style.marginLeft = '-490px';
             else
-                aux1.style.marginLeft = '-88%';
+                aux1.style.marginLeft = '-89%';
 
             document.querySelector('.arrow').style.transform = 'rotate(-90deg)';
         }
