@@ -118,7 +118,7 @@ class Input {
                 return;
         }
     
-        this.moviment.slide(input);
+        this.moviment.move_continuous(input);
     }
 
 }
@@ -126,155 +126,136 @@ class Input {
 class Moviment {
 
     constructor() {    
-        this.posX = 0;
-        this.posY = 0;
-        this.showed = null;
-        this.focused = false;
+        this.x_cordinate = 0;
+        this.y_cordinate = 0;
+        this.game_is_open = false;
         
-        this.player1 = document.querySelector('.player1');
-        this.player2 = document.querySelector('.player2');
+        this.player_element = document.querySelector('.player1');
       
-        this.set_board(0);
-        //this.set_board(1);
-        this.#setar_atalhos();
+        this.#SetColliders();
+        this.#SetClickEvents();
 
-        this.cor_transic = 1;
-        this.id_transic = 0;
+        this.actual_player_anim = 0;
+        this.cast_view = true;
+        this.async_func = null;
+    }
 
-        this.rastros = new Array(20);
+    #AllowToCastView() {
+        return;
 
-        for (let index = 0; index < 20; index++) {
-            const board = document.querySelector('.board2');
-
-            let a = board.appendChild(document.createElement("span"));
-            a.classList.add("rastro");
-            this.rastros[index] = a;
+        if (this.async_func != null) {
+          this.async_func.catch((error) => {
+            console.log('Chamada assíncrona interrompida:', error);
+          });
         }
-    }
-
-    set_board(param) {
-
+    
+        this.cast_view = false;
+        this.async_func = this.#func_assincrona(); // Chamada corrigida
         
-        this.actual_board = param;
+    }
+    
+    async #func_assincrona() {
+    
+    console.log("chegou");
 
-        if(param == 0){
-            document.querySelector(".board1").style.display = "flex";
-            document.querySelector(".board2").style.display = "none";
-
-            this.mapa = [ [1, 0, 0, 0, 0],
-                          [1, 1, 1, 0, 1],
-                          [0, 1, 1, 1, 1],
-                          [1, 1, 0, 0, 0],
-                          [1, 1, 1, 1, 1],
-                          [1, 1, 1, 1, 0],
-                          [0, 0, 0, 1, 1] ];
-
-             this.x = Number(5);
-             this.y = Number(7);
-             this.move_to(0);
-
-        } else {
-            document.querySelector(".board1").style.display = "none";
-            document.querySelector(".board2").style.display = "flex";
-
-             this.mapa = [  [0,0,1,1,1, 1,1,1,0,1],
-                            [0,0,1,0,1, 0,0,1,1,1],
-                            [0,0,0,0,1, 1,1,1,1,1],
-                            [1,1,1,1,1, 0,1,1,1,1],
-                            [1,0,1,1,1, 0,1,1,0,1],
-
-                            [1,0,1,1,0, 0,1,0,0,1],
-                            [1,0,0,1,1, 1,1,1,1,1],
-                            [1,0,0,1,0, 0,0,0,1,0],
-                            [1,0,0,0,0, 0,0,0,1,0],
-                            [1,1,1,1,1, 1,1,1,1,0]];
-
-             
-             this.x = Number(10);
-             this.y = Number(10);
-             this.move_to(9);
-        }        
+    return new Promise((resolve) => {
+        const delay_seconds = 3 * 1000;
+        setTimeout(() => {
+        this.cast_view = true;
+        console.log("saiu");
+        resolve(); // Resolve a Promise após o atraso
+        }, delay_seconds);
+    });
+    
     }
 
-    move(param) {
-        //param:{x, y}
+    #SetColliders() {
 
-        //console.log(`[${this.mapa}][${this.posX}:${this.posY}]`);
-    
-        if(param[0]==1) {
-            if(this.posX+1 >= this.x)
+        this.mapa = [ [1, 0, 0, 0, 0],
+                        [1, 1, 1, 0, 1],
+                        [0, 1, 1, 1, 1],
+                        [1, 1, 0, 0, 0],
+                        [1, 1, 1, 1, 1],
+                        [1, 1, 1, 1, 0],
+                        [0, 0, 0, 1, 1] ];
+
+        this.x = Number(5);
+        this.y = Number(7);
+        
+        this.player_element.style.transition = 'none';
+        this.player_element.style.left = (this.x_cordinate * 50) + 'px';
+        this.player_element.style.top  = (this.y_cordinate * 50) + 'px';
+    }
+
+    move_to(direc) {
+        
+        if(direc[0]==1) {
+            if(this.x_cordinate+1 >= this.x)
                 return false;
     
-            if(this.mapa[this.posY][this.posX+1] == 0)
+            if(this.mapa[this.y_cordinate][this.x_cordinate+1] == 0)
                 return false;
     
-            this.posX++;
-        } else if(param[0]==-1) {
-            if(this.posX == 0)
+            this.x_cordinate++;
+        } else if(direc[0]==-1) {
+            if(this.x_cordinate == 0)
                 return false;
                 
-            if(this.mapa[this.posY][this.posX-1] == 0)
+            if(this.mapa[this.y_cordinate][this.x_cordinate-1] == 0)
                 return false;
     
-            this.posX--;
-        } else if(param[1]==-1) {
-            if(this.posY == 0)
+            this.x_cordinate--;
+        } else if(direc[1]==-1) {
+            if(this.y_cordinate == 0)
                 return false;
                 
-            if(this.mapa[this.posY-1][this.posX] == 0)
+            if(this.mapa[this.y_cordinate-1][this.x_cordinate] == 0)
                 return false;
     
-            this.posY--;
-        } else if(param[1]==1) {
-            if(this.posY+1 == this.y)
+            this.y_cordinate--;
+        } else if(direc[1]==1) {
+            if(this.y_cordinate+1 == this.y)
                 return false;
                 
-            if(this.mapa[this.posY+1][this.posX] == 0)
+            if(this.mapa[this.y_cordinate+1][this.x_cordinate] == 0)
                 return false;
     
-            this.posY++;
+            this.y_cordinate++;
         }
     
         return true;
     }
 
-    move_to(param) {
+    teleport_to(index, scroll_view) {
 
-        if(this.actual_board == 0) {
-            if( !this.player1.style.animation.includes('surgir1') )
-                this.player1.style.animation = 'surgir1 150ms ease-out';
-            else
-            this.player1.style.animation = 'surgir2 150ms ease-out';
-        }
-    
-        console.log(`[${this.x}:${this.y}]`);
-        this.posY = Math.floor(param/this.x);
-        this.posX = param%this.x;
-        
-        if(this.actual_board == 0) {
-            this.player1.style.transition = 'none';
-        
-            this.player1.style.left = (this.posX * 50) + 'px';
-            this.player1.style.top  = (this.posY * 50) + 'px';
-        } else {
-            this.player2.style.transition = 'none';
-        
-            this.player2.style.left = (this.posX * 50) + 'px';
-            this.player2.style.top  = (this.posY * 50) + 'px';
+        //if(!this.cast_view)
+        //    return;
 
-            this.player2.src = "images/player_gif.gif";
-        }
+        if(this.y_cordinate == Math.floor(index/this.x) & this.x_cordinate == index%this.x)
+            return;
+
+        if( !this.player_element.style.animation.includes('surgir1') )
+            this.player_element.style.animation = 'surgir1 150ms ease-out';
+        else
+        this.player_element.style.animation = 'surgir2 150ms ease-out';
     
-        this.show_hide();
+        this.y_cordinate = Math.floor(index/this.x);
+        this.x_cordinate = index%this.x;
+        
+        this.player_element.style.transition = 'none';
+        this.player_element.style.left = (this.x_cordinate * 50) + 'px';
+        this.player_element.style.top  = (this.y_cordinate * 50) + 'px';
+
+        this.refresh_gui(scroll_view);
     }
 
-    cores(param) {
+    #player_colors(index) {
 
         document.querySelector(".fil4").style.animation = 'none';
         document.querySelector(".fil5").style.animation = 'none';
         document.querySelector(".fil4").style.outline = 'none';
     
-        switch(param) {
+        switch(index) {
             case 'white':
                 document.querySelector(".fil4").style.fill = "#d4d4d4";
                 document.querySelector(".fil5").style.fill = "#ffffff";
@@ -316,180 +297,108 @@ class Moviment {
         }
     }
 
-    show_hide() {
+    refresh_gui(scroll_view) {
 
-        //if(this.showed != null)
-        //this.showed.style.display = 'none';
-        //let botao = document.getElementById('botao');
-        
         document.getElementById('legenda').textContent = '\xA0';
-        //botao.disabled = false;
 
-        if(this.actual_board == 0) {
-
-            this.cores('white');
-            switch(this.posX + this.posY*this.x) {
-                case 0:
-                    document.getElementById('legenda').textContent = 'bem-vindo!';
+        switch(this.x_cordinate + this.y_cordinate*this.x) {
+            case 0:
+                document.getElementById('legenda').textContent = 'bem-vindo!';
+                if(scroll_view) {
                     document.querySelector('.tutorial').scrollIntoView({ behavior: 'smooth', block: 'end'});
-                    this.cores('yellow');
-                    break;
-                case 5:
-                    //botao.disabled = true;
-                    break;
-                case 7:
-                    document.getElementById('legenda').textContent = 'sobre mim';
+                    this.#AllowToCastView();
+                }
+                this.#player_colors('yellow');
+                break;
+            case 7:
+                document.getElementById('legenda').textContent = 'sobre mim';
+                if(scroll_view) {
                     document.querySelector('.info').scrollIntoView({ behavior: 'smooth', block: 'start'});
-                    this.cores('blue');
-                    break;
-                case 9:
-                    //let char = "&ccedil";
-                    //document.getElementById('legenda').textContent = '\xEA \u0303 ';
-                    document.getElementById('legenda').textContent = 'projetos';
+                    this.#AllowToCastView();
+                }
+                this.#player_colors('blue');
+                break;
+            case 9:
+                //let char = "&ccedil";
+                //document.getElementById('legenda').textContent = '\xEA \u0303 ';
+                document.getElementById('legenda').textContent = 'projetos';
+                if(scroll_view) {
                     document.querySelector('.projetos').scrollIntoView({ behavior: 'smooth', block: 'start'});
-                    this.cores('green');
-                    break;
-                case 24:
-                    document.getElementById('legenda').textContent = 'minhas skills';
+                    this.#AllowToCastView();
+                }
+                this.#player_colors('green');
+                break;
+            case 24:
+                document.getElementById('legenda').textContent = 'minhas skills';
+                if(scroll_view) {
                     document.querySelector('.skills').scrollIntoView({ behavior: 'smooth', block: 'start'});
-                    this.cores('pink');
-                    break;
-                case 25:
-                    document.getElementById('legenda').textContent = `forma\xE7\xE3o`;
+                    this.#AllowToCastView();
+                }
+                this.#player_colors('pink');
+                break;
+            case 25:
+                document.getElementById('legenda').textContent = `forma\xE7\xE3o`;
+                if(scroll_view) {
                     document.querySelector('.formacoes').scrollIntoView({ behavior: 'smooth', block: 'start'});
-                    //this.showed.style.display = 'flex';
-                    this.cores('red');
-                    break;
-                case 34:
-                    document.getElementById('legenda').textContent = 'obrigado pela visita!';
+                    this.#AllowToCastView();
+                }
+                //this.showed.style.display = 'flex';
+                this.#player_colors('red');
+                break;
+            case 34:
+                document.getElementById('legenda').textContent = 'obrigado pela visita!';
+                if(scroll_view) {
                     document.querySelector('.inprogress').scrollIntoView({ behavior: 'smooth', block: 'start'});
-                    this.cores('rainbow');
-                    break;
-                default:
-                    this.showed = null;
-                    //botao.disabled = true;
-                    break;
-            }
-        } else {
-            switch(this.posX + this.posY*this.x) {
-                case 9:
-                    document.getElementById('legenda').textContent = 'bem-vindo!';
-        
-                    this.showed = document.querySelector('.tutorial');
-                    this.showed.style.display = 'flex';
-                    break;
-                case 63:
-                    document.getElementById('legenda').textContent = 'sobre mim';
-        
-                    this.showed = document.querySelector('.info');
-                    this.showed.style.display = 'flex';
-                    break;
-                case 5:
-                    document.getElementById('legenda').textContent = 'sobre mim';
-        
-                    this.showed = document.querySelector('.info');
-                    this.showed.style.display = 'flex';
-                    break;
-                case 44:
-                    document.getElementById('legenda').textContent = 'experi\xEAncias';
-        
-                    this.showed = document.querySelector('.inprogress');
-                    this.showed.style.display = 'flex';
-                    break;
-                case 98:
-                    document.getElementById('legenda').textContent = 'o que procuro';
-        
-                    this.showed = document.querySelector('.inprogress');
-                    this.showed.style.display = 'flex';
-                    this.cores('pink');
-                    break;
-                case 46:
-                    document.getElementById('legenda').textContent = `forma\xE7\xE3o`;
-        
-                    this.showed = document.querySelector('.inprogress');
-                    this.showed.style.display = 'flex';
-                    break;
-                case 12:
-                    document.getElementById('legenda').textContent = 'obrigado pela visita!';
-                    
-                    this.showed = document.querySelector('.inprogress');
-                    this.showed.style.display = 'flex';
-                    break;
-                default:
-                    this.showed = null;
-                    //botao.disabled = true;
-                    break;
-            }
+                    this.#AllowToCastView();
+                }
+                this.#player_colors('rainbow');
+                break;
+            default:
+                this.showed = null;
+                this.#player_colors('white');
+                break;
         }
+        
     }
 
-    slide(input) {
+    move_continuous(direc) {
 
         let bool = true;
         let aux = 1;
     
         while(aux < 10 & bool) {
-            bool = this.move(input);
+            bool = this.move_to(direc);
             aux++;
         };
 
         if(aux > 2) {
-            if(this.actual_board == 0) {
-                this.player1.style.transition = (aux*50) + 'ms ease-out all';
 
-                if(input[0] == 1)
-                    this.player1.style.animation = 'direita '+(aux+2)*50+'ms linear';
-                else if (input[0] == -1)
-                    this.player1.style.animation = 'esquerda '+(aux+2)*50+'ms linear';
-                else if (input[1] == 1)
-                    this.player1.style.animation = 'baixo '+(aux+2)*50+'ms linear';
-                else
-                    this.player1.style.animation = 'cima '+(aux+2)*50+'ms linear';
+            this.player_element.style.transition = (aux*50) + 'ms ease-out all';
 
-                this.player1.style.left = (this.posX * 50) + 'px';
-                this.player1.style.top  = (this.posY * 50) + 'px';
-            } else {
-                
-                this.player2.style.transition = (aux*50) + 'ms linear all';
-                this.player2.style.left = (this.posX  * 50) + 'px';
-                this.player2.style.top  = (this.posY  * 50) + 'px';
+            if(direc[0] == 1)
+                this.player_element.style.animation = 'direita '+(aux+2)*50+'ms linear';
+            else if (direc[0] == -1)
+                this.player_element.style.animation = 'esquerda '+(aux+2)*50+'ms linear';
+            else if (direc[1] == 1)
+                this.player_element.style.animation = 'baixo '+(aux+2)*50+'ms linear';
+            else
+                this.player_element.style.animation = 'cima '+(aux+2)*50+'ms linear';
 
-                if(input[0] == 1)
-                    this.anim('direita', aux);
-                else if (input[0] == -1)
-                    this.anim('esquerda', aux);
-                else if (input[1] == 1)
-                    this.anim('baixo', aux);
-                else
-                    this.anim('cima', aux);
-            }
+            this.player_element.style.left = (this.x_cordinate * 50) + 'px';
+            this.player_element.style.top  = (this.y_cordinate * 50) + 'px';
+            
     
-            //var audio = new Audio('audio_2.M4A');
-            //audio.play();
-    
-            this.show_hide();
+            this.refresh_gui(true);
         }
         
     }
 
-    async anim(direc, tempo) {
-
-        tempo *= 10;
-
-        for (let index = 0; index < 7; index++) {
-            this.player2.src =  `images/player2/${direc}_${index}.png`;
-            await new Promise(resolve => setTimeout(resolve, tempo));
-        }
-
-      }
-
-    focus_on(param) {
+    open_board(open) {
     
         let aux1 = document.querySelector('.game');
         let aux2 = document.querySelector('.container');
         
-        if(param) {  // FOCA NO GAME
-            
+        if(open) {  // FOCA NO GAME
             aux1.style.marginLeft = '0px';
             document.querySelector('.arrow').style.transform = 'rotate(90deg)';
         }
@@ -504,17 +413,16 @@ class Moviment {
             document.querySelector('.arrow').style.transform = 'rotate(-90deg)';
         }
 
-        this.focused = param;
-        
+        this.game_is_open = open;
     }
 
-    #setar_atalhos(){
+    #SetClickEvents(){
         let board;
         board = document.querySelector(".board1");
 
         const criar = (top, left, pos, boardd) => {
             let a = boardd.appendChild(document.createElement("button"));
-            a.addEventListener('click', (event) => { this.move_to(pos); }, false);
+            a.addEventListener('click', (event) => { this.teleport_to(pos, true); }, false);
             a.classList.add("atalho");
             a.style.top = top;
             a.style.left = left;
@@ -526,15 +434,6 @@ class Moviment {
         criar("200px","200px", 24, board); // 3   
         criar("250px","  0px", 25, board); // 4
         criar("300px","200px", 34, board); // 5
-
-        board = document.querySelector(".board2");
-        criar(" 50px","  100px",  12, board); // 0
-        criar(" 0px"," 450px",  9, board); // 1
-        criar("200px","200px", 44, board); // 3  
-
-        criar("200px","300px",  46, board); // 2 
-        criar("300px","150px", 63, board); // 5
-        criar("450px","400px", 98, board); // 4
     }
 
 }
@@ -544,15 +443,15 @@ const input = new Input(moviment);
 const game = document.getElementById("game");
 
 document.getElementById('botao').addEventListener('click', (event) => {
-    moviment.focus_on(!moviment.focused);
+    moviment.open_board(!moviment.game_is_open);
     //window.alert('botao');
 }, false);
 window.addEventListener('resize', function(event) {
-    moviment.focus_on(moviment.focused);
+    moviment.open_board(moviment.game_is_open);
 });
 
-moviment.focus_on(true);
-//moviment.move_to(9);
+moviment.open_board(true);
+//moviment.move_to(0);
 
 document.getElementById("change").addEventListener('click', (event) => {
     const transicao = async function transicao () {
@@ -563,10 +462,10 @@ document.getElementById("change").addEventListener('click', (event) => {
     
         await new Promise(resolve => setTimeout(resolve, 300));
         if(moviment.actual_board==0) {
-            moviment.set_board(1);
+            moviment.SetColliders(1);
             game.classList.add('retro');
         } else {
-            moviment.set_board(0);
+            moviment.SetColliders(0);
             game.classList.remove('retro');
         }
         
@@ -712,4 +611,46 @@ function loadHtml(id, filename) {
         return;
     }
 }
+
+
+
+
+function isInViewport(el) {
+    const rect = el.getBoundingClientRect();
+
+    console.log(`[${el.id}][top: ${rect.top}][bottom: ${rect.bottom}]`);
+    return (
+        rect.top >= -50 &&
+        rect.bottom > 50
+    );
+}
+
+console.log("deu wads");
+
+const container = document.querySelector('.container');
+const scroll_tuto = document.querySelector('.tutorial');
+const scroll_info = document.querySelector('.info');
+const scroll_proj = document.querySelector('.projetos');
+const scroll_form = document.querySelector('.formacoes');
+const scroll_skil = document.querySelector('.skills');
+const scroll_prog = document.querySelector('.inprogress');
+
+//container.addEventListener('scroll', function () {
+container.addEventListener('wheel', function () {
+    if(isInViewport(scroll_tuto)) {
+        moviment.teleport_to(0, false);
+    } else if(isInViewport(scroll_info)) {
+        moviment.teleport_to(7, false);
+    } else if(isInViewport(scroll_proj)) {
+        moviment.teleport_to(9, false);
+    } else if(isInViewport(scroll_form)) {
+        moviment.teleport_to(25, false);
+    } else if(isInViewport(scroll_skil)) {
+        moviment.teleport_to(24, false);
+    } else if(isInViewport(scroll_prog)) {
+        moviment.teleport_to(34, false);
+    }
+
+}, true);
+
 
