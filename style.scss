@@ -57,6 +57,23 @@ body {
     overscroll-behavior: contain;
 }
 
+@keyframes fechar_game_1 {
+    0% { margin-left: 0; }
+    100% { margin-left: -490px; }
+}
+
+@keyframes fechar_game_2 {
+    0% { margin-left: 0; }
+    100% { margin-left: calc(-100vw + 75px); }
+}
+
+@keyframes abrir_game {
+    0% { margin-left: -500px; }
+    100% { margin-left: -0; }
+}
+
+
+
 .game {
     display: flex;
     z-index: 1;
@@ -67,6 +84,7 @@ body {
     align-items: center;
     flex-direction: column;
     justify-content: center;
+    
     
     h1 {
         padding-top: 20px;
@@ -452,6 +470,7 @@ body {
             margin: 0;
         }
     }
+    
 }
 
 
@@ -1039,7 +1058,7 @@ body {
 
     .game {
         position: absolute;
-        width: 90vw;
+        width: calc(100vw - 65px);
     }
 
     .tutorial {

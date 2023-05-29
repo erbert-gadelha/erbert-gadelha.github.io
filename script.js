@@ -86,7 +86,7 @@ class Input {
 
         let input = [0,0];
     
-        if(window.innerWidth < 900 & !this.moviment.focused)
+        if(!this.moviment.game_is_open)
             return
     
         switch(param) {
@@ -128,45 +128,37 @@ class Moviment {
     constructor() {    
         this.x_cordinate = 0;
         this.y_cordinate = 0;
-        this.game_is_open = false;
+        this.game_is_open = true;
         
         this.player_element = document.querySelector('.player1');
+        document.querySelector('.arrow').style.transform = 'rotate(90deg)';
       
         this.#SetColliders();
         this.#SetClickEvents();
 
         this.actual_player_anim = 0;
-        this.cast_view = true;
-        this.async_func = null;
+        this.cast_view = 0;
     }
 
-    #AllowToCastView() {
-        return;
+    async #AllowToCastView() {
 
-        if (this.async_func != null) {
-          this.async_func.catch((error) => {
-            console.log('Chamada assíncrona interrompida:', error);
-          });
-        }
+        //console.log("chegou");
+
+        if (this.cast_view == 0)
+            console.log('bloqueou');
+
+        this.cast_view += 1;
+
+
+        const delay_seconds = 1 * 1000;
+         await new Promise(resolve => setTimeout(resolve, delay_seconds));
     
-        this.cast_view = false;
-        this.async_func = this.#func_assincrona(); // Chamada corrigida
+        this.cast_view -= 1;
+        if (this.cast_view == 0)
+            console.log('liberou');
+
+        //console.log('saiu');
         
-    }
-    
-    async #func_assincrona() {
-    
-    console.log("chegou");
-
-    return new Promise((resolve) => {
-        const delay_seconds = 3 * 1000;
-        setTimeout(() => {
-        this.cast_view = true;
-        console.log("saiu");
-        resolve(); // Resolve a Promise após o atraso
-        }, delay_seconds);
-    });
-    
     }
 
     #SetColliders() {
@@ -228,8 +220,8 @@ class Moviment {
 
     teleport_to(index, scroll_view) {
 
-        //if(!this.cast_view)
-        //    return;
+        if(this.cast_view > 0)
+            return;
 
         if(this.y_cordinate == Math.floor(index/this.x) & this.x_cordinate == index%this.x)
             return;
@@ -246,7 +238,7 @@ class Moviment {
         this.player_element.style.left = (this.x_cordinate * 50) + 'px';
         this.player_element.style.top  = (this.y_cordinate * 50) + 'px';
 
-        this.refresh_gui(scroll_view);
+        this.#refresh_gui(scroll_view);
     }
 
     #player_colors(index) {
@@ -297,60 +289,57 @@ class Moviment {
         }
     }
 
-    refresh_gui(scroll_view) {
+    #scroll_to (class_name) {
+        if(this.cast_view > 0)
+            return;
+
+        document.querySelector(`.${class_name}`).scrollIntoView({ behavior: 'smooth', block: 'start'});
+        this.#AllowToCastView();
+        
+    }
+
+    #refresh_gui(scroll_view) {
 
         document.getElementById('legenda').textContent = '\xA0';
 
         switch(this.x_cordinate + this.y_cordinate*this.x) {
             case 0:
                 document.getElementById('legenda').textContent = 'bem-vindo!';
-                if(scroll_view) {
-                    document.querySelector('.tutorial').scrollIntoView({ behavior: 'smooth', block: 'end'});
-                    this.#AllowToCastView();
-                }
+                if(scroll_view)
+                    this.#scroll_to('tutorial')
                 this.#player_colors('yellow');
                 break;
             case 7:
                 document.getElementById('legenda').textContent = 'sobre mim';
-                if(scroll_view) {
-                    document.querySelector('.info').scrollIntoView({ behavior: 'smooth', block: 'start'});
-                    this.#AllowToCastView();
-                }
+                if(scroll_view)
+                    this.#scroll_to('info')
                 this.#player_colors('blue');
                 break;
             case 9:
                 //let char = "&ccedil";
                 //document.getElementById('legenda').textContent = '\xEA \u0303 ';
                 document.getElementById('legenda').textContent = 'projetos';
-                if(scroll_view) {
-                    document.querySelector('.projetos').scrollIntoView({ behavior: 'smooth', block: 'start'});
-                    this.#AllowToCastView();
-                }
+                if(scroll_view)
+                    this.#scroll_to('projetos')
                 this.#player_colors('green');
                 break;
             case 24:
                 document.getElementById('legenda').textContent = 'minhas skills';
-                if(scroll_view) {
-                    document.querySelector('.skills').scrollIntoView({ behavior: 'smooth', block: 'start'});
-                    this.#AllowToCastView();
-                }
+                if(scroll_view)
+                    this.#scroll_to('skills')
                 this.#player_colors('pink');
                 break;
             case 25:
-                document.getElementById('legenda').textContent = `forma\xE7\xE3o`;
-                if(scroll_view) {
-                    document.querySelector('.formacoes').scrollIntoView({ behavior: 'smooth', block: 'start'});
-                    this.#AllowToCastView();
-                }
-                //this.showed.style.display = 'flex';
+                document.getElementById('legenda').textContent = `forma\xE7\xE3o`;                
+                if(scroll_view)
+                    this.#scroll_to('formacoes')
+                    
                 this.#player_colors('red');
                 break;
             case 34:
                 document.getElementById('legenda').textContent = 'obrigado pela visita!';
-                if(scroll_view) {
-                    document.querySelector('.inprogress').scrollIntoView({ behavior: 'smooth', block: 'start'});
-                    this.#AllowToCastView();
-                }
+                if(scroll_view)
+                    this.#scroll_to('inprogress')
                 this.#player_colors('rainbow');
                 break;
             default:
@@ -388,7 +377,7 @@ class Moviment {
             this.player_element.style.top  = (this.y_cordinate * 50) + 'px';
             
     
-            this.refresh_gui(true);
+            this.#refresh_gui(true);
         }
         
     }
@@ -396,19 +385,37 @@ class Moviment {
     open_board(open) {
     
         let aux1 = document.querySelector('.game');
-        let aux2 = document.querySelector('.container');
         
         if(open) {  // FOCA NO GAME
-            aux1.style.marginLeft = '0px';
+            
+            if(this.game_is_open == open) 
+                aux1.style.marginLeft = '0';
+            else
+                aux1.style.animation = 'abrir_game 400ms ease-out forwards';
+
             document.querySelector('.arrow').style.transform = 'rotate(90deg)';
         }
         else {// FOCA NO CONTAINER
+            
 
-            // SE TELA TIVE ESPACO
-            if(window.innerWidth > 900) 
-                aux1.style.marginLeft = '-490px';
-            else
-                aux1.style.marginLeft = '-89%';
+            if(this.game_is_open == open) {
+                // SE TELA TIVE ESPACO
+                if(window.innerWidth > 900) {
+                    aux1.style.animation = 'none';
+                    aux1.style.marginLeft = '-490px';
+                }
+                else {
+                    aux1.style.animation = 'none';
+                    aux1.style.marginLeft = 'calc(-100vw + 75px)';
+                }
+
+            } else {
+                // SE TELA TIVE ESPACO
+                if(window.innerWidth > 900) 
+                    aux1.style.animation = 'fechar_game_1 400ms ease-out forwards';
+                else
+                    aux1.style.animation = 'fechar_game_2 400ms ease-out forwards';
+            }
 
             document.querySelector('.arrow').style.transform = 'rotate(-90deg)';
         }
@@ -450,37 +457,8 @@ window.addEventListener('resize', function(event) {
     moviment.open_board(moviment.game_is_open);
 });
 
-moviment.open_board(true);
+//moviment.open_board(true);
 //moviment.move_to(0);
-
-document.getElementById("change").addEventListener('click', (event) => {
-    const transicao = async function transicao () {
-        document.getElementById('barra_cima').style.height = '50vh';
-        document.getElementById('barra_cima').style.margin = '0';
-        document.querySelector('.cortina').style.backgroundColor = 'white';
-        auxiliar = true;
-    
-        await new Promise(resolve => setTimeout(resolve, 300));
-        if(moviment.actual_board==0) {
-            moviment.SetColliders(1);
-            game.classList.add('retro');
-        } else {
-            moviment.SetColliders(0);
-            game.classList.remove('retro');
-        }
-        
-        await new Promise(resolve => setTimeout(resolve, 100));
-    
-        document.getElementById('barra_cima').style.height = '0px';
-        document.getElementById('barra_cima').style.marginBottom = '100vh';
-        document.querySelector('.cortina').style.backgroundColor = 'transparent';
-        auxiliar = false;
-    }
-
-    transicao();
-}, false);
-
-
 
 class DragToScroll {
 
@@ -575,15 +553,11 @@ function reqListener () {
 };
 
 function loadHtml(id, filename) {
-    console.log(`[${id}][${filename}]`);
 
-    //return;
 
     let xhttp;
     let element = document.getElementById(id);
     let file = filename;
-
-    //element.innerHTML = '<div> <img style="background-image: url(images/projetos/a_promessa_de_nassau_1-banner.png)" width="100%" height="250px"> <h1>A Promessa de Nassau</h1> <span> Contextualizado no famigerado "voo do boi", com mecanicas inspirados em <i>Burrito Bizom</i>, A Promessa de Nassau foi um jogo concebido e produzido durante uma <b>gameJam de 48 horas</b> <br><br> <a href="https://github.com/erbert-gadelha/a-promessa-de-nassau" target="_blank">repositorio do jogo</a> <br><br> Fiquei responsavel pela programacao e organizacao. </span> <h5 class="ferramentas"> <svg width="100" height="100"> <image xlink:href="images/projetos/logos/c-sharp-logo.svg" width="90" height="90"/> </svg> <svg width="120" height="100"> <image xlink:href="images/projetos/logos/unity-logo.svg" width="120" height="90"/> </svg> </h5> </div>';
 
     if(file) {
         xhttp = new XMLHttpRequest();
@@ -591,41 +565,21 @@ function loadHtml(id, filename) {
             if(this.readyState == 4) {
                 if(this.status == 200) {
                     element.innerHTML = this.responseText;
-                    console.log('[4 & 200]');
                 } else if(this.status == 404) {
                     element.innerHTML = "<h1>Page not Found. :c</h1>";
-                    console.log('[4 & 404]');
-                }else {
-                    console.log(`[apenas 4]\n${this.responseText}}`);
                 }
-            } else {
-                console.log('[!= 4]');
             }
-
         }
         xhttp.onload = reqListener;
         xhttp.open("get", file, true);
         xhttp.send();
 
-        //console.log('vewio ate o fim');
         return;
     }
 }
 
 
 
-
-function isInViewport(el) {
-    const rect = el.getBoundingClientRect();
-
-    console.log(`[${el.id}][top: ${rect.top}][bottom: ${rect.bottom}]`);
-    return (
-        rect.top >= -50 &&
-        rect.bottom > 50
-    );
-}
-
-console.log("deu wads");
 
 const container = document.querySelector('.container');
 const scroll_tuto = document.querySelector('.tutorial');
@@ -635,8 +589,22 @@ const scroll_form = document.querySelector('.formacoes');
 const scroll_skil = document.querySelector('.skills');
 const scroll_prog = document.querySelector('.inprogress');
 
-//container.addEventListener('scroll', function () {
-container.addEventListener('wheel', function () {
+
+let previousWidth = window.innerWidth;
+container.addEventListener('scroll', function () {
+
+    
+    const isInViewport = (el) => {
+        const rect = el.getBoundingClientRect();
+        return(rect.top + (rect.height/2)) > 0;
+    }
+
+    if(previousWidth != window.innerWidth) {
+        previousWidth = window.innerWidth;
+        return;
+    }
+    
+    
     if(isInViewport(scroll_tuto)) {
         moviment.teleport_to(0, false);
     } else if(isInViewport(scroll_info)) {
