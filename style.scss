@@ -84,6 +84,13 @@ body {
     align-items: center;
     flex-direction: column;
     justify-content: center;
+
+    #touchTarget {
+        position: absolute;
+        width: 90%;
+        height: 90%;
+        //background-color: #166ad828;
+    }
     
     
     h1 {

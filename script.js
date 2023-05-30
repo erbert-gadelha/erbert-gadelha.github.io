@@ -14,7 +14,7 @@ class Input {
         this.initial = [0,0]
         this.final = [0,0];
 
-        this.tela = document.getElementById("game");
+        this.tela = document.getElementById("touchTarget");
         this.moviment = _moviment;
 
         this.adicionar_eventos();
@@ -24,6 +24,8 @@ class Input {
 
         //  EVENTOS TECLADO
             document.addEventListener('keydown', (event) => {
+                //window.alert(event);
+
                 if([37,38,39,40].indexOf(event.keyCode) > -1)
                     event.preventDefault();                
 
@@ -31,7 +33,8 @@ class Input {
             }, false);
         //
         //  EVENTOS TOUCH
-            let tela_ = document.getElementById("game");
+            let tela_ = document.getElementById("touchTarget");
+            window.alert(tela_);
             let moviment_ = this.moviment;
             //console.log(this.moviment);
             tela_.addEventListener("touchstart",
@@ -235,8 +238,8 @@ class Moviment {
 
     teleport_to(index, scroll_view) {
 
-        if(this.cast_view > 0)
-            return;
+        //if(this.cast_view > 0)
+        //    return;
 
         if(this.y_cordinate == Math.floor(index/this.x) & this.x_cordinate == index%this.x)
             return;
@@ -466,7 +469,7 @@ class Moviment {
 
 const moviment = new Moviment();
 const input = new Input(moviment);
-const game = document.getElementById("game");
+//const game = document.getElementById("game");
 
 document.getElementById('botao').addEventListener('click', (event) => {
     moviment.open_board(!moviment.game_is_open);
