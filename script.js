@@ -305,8 +305,8 @@ class Moviment {
     }
 
     #scroll_to (class_name) {
-        if(this.cast_view > 0)
-            return;
+        //if(this.cast_view > 0)
+        //    return;
 
         
         if(navigator.userAgent.includes("Android"))
