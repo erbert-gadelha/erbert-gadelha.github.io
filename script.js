@@ -2,7 +2,7 @@
 //import Input from "./scripts/Input.js";
 
 if(navigator.userAgent.includes("Android")) {
-    document.getElementById('game').style.display = 'none';
+    //document.getElementById('game').style.display = 'none';
     document.querySelector('.tutorial').style.display = 'none';
 }
 
@@ -32,22 +32,31 @@ class Input {
         //
         //  EVENTOS TOUCH
             let tela_ = document.getElementById("game");
+            let moviment_ = this.moviment;
+            //console.log(this.moviment);
             tela_.addEventListener("touchstart",
                 function clicked2(e) {
 
-                    //e.preventDefault();        
+                    if(!moviment_.game_is_open)
+                        return;
 
                     let br = tela_.getBoundingClientRect();
                     
                     let x = (e.touches[0].clientX - br.left);
                     let y = (e.touches[0].clientY - br.top);
                     this.initial = [x, y];
+
+                    if(x < br.width)
+                        e.preventDefault();
+
                 }
             );
             
             this.tela.addEventListener("touchmove",
                 function clicked2(e) {
-                    //e.preventDefault(); 
+
+                    if(!moviment_.game_is_open)
+                        return;
 
                     var br = tela_.getBoundingClientRect();
                     
@@ -55,26 +64,32 @@ class Input {
                     let y = (e.touches[0].clientY - br.top);
 
                     this.final = [x, y];
-                    
+
+                    if(x < br.width)
+                        e.preventDefault();
+
                 }
             );
             const temporario = this.moviment;
             this.tela.addEventListener("touchend",
                 function clicked2(e) {
-                    //e.preventDefault(); 
+                    
+                    if(!moviment_.game_is_open)
+                        return;
+
                     var aux = [this.initial[0] - this.final[0], this.initial[1] - this.final[1]];
 
                     if(Math.abs(aux[0]) > Math.abs(aux[1]))
                     {   //HORIZONTAL
-                        if( Math.abs(aux[0]) < 50)
+                        if( Math.abs(aux[0]) < 70)
                             return;
-                        temporario.slide([(aux[0]>0?-1:1), 0]);
+                        temporario.move_continuous([(aux[0]>0?-1:1), 0]);
                     }
                     else
                     {   //VERTICAL
-                        if( Math.abs(aux[1]) < 50)
+                        if( Math.abs(aux[1]) < 70)
                             return;
-                        temporario.slide([0, (aux[1]>0?-1:1)]);
+                        temporario.move_continuous([0, (aux[1]>0?-1:1)]);
                     }
 
                 }
@@ -293,7 +308,11 @@ class Moviment {
         if(this.cast_view > 0)
             return;
 
-        document.querySelector(`.${class_name}`).scrollIntoView({ behavior: 'smooth', block: 'start'});
+        
+        if(navigator.userAgent.includes("Android"))
+            document.querySelector(`.${class_name}`).scrollIntoView({ behavior: 'smooth', block: 'start'});
+        else
+            document.querySelector(`.${class_name}`).scrollIntoView({ behavior: 'smooth', block: 'start'});
         this.#AllowToCastView();
         
     }
@@ -603,21 +622,24 @@ container.addEventListener('scroll', function () {
         previousWidth = window.innerWidth;
         return;
     }
+
+    if(moviment.cast_view > 0)
+        return;
     
     
-    if(isInViewport(scroll_tuto)) {
+    if(isInViewport(scroll_tuto))
         moviment.teleport_to(0, false);
-    } else if(isInViewport(scroll_info)) {
+    else if(isInViewport(scroll_info))
         moviment.teleport_to(7, false);
-    } else if(isInViewport(scroll_proj)) {
+    else if(isInViewport(scroll_proj))
         moviment.teleport_to(9, false);
-    } else if(isInViewport(scroll_form)) {
+    else if(isInViewport(scroll_form))
         moviment.teleport_to(25, false);
-    } else if(isInViewport(scroll_skil)) {
+    else if(isInViewport(scroll_skil))
         moviment.teleport_to(24, false);
-    } else if(isInViewport(scroll_prog)) {
+    else if(isInViewport(scroll_prog))
         moviment.teleport_to(34, false);
-    }
+    
 
 }, true);
 
