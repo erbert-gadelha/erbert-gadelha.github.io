@@ -34,7 +34,7 @@ class Input {
         //
         //  EVENTOS TOUCH
             let tela_ = document.getElementById("touchTarget");
-            window.alert(tela_);
+            
             let moviment_ = this.moviment;
             //console.log(this.moviment);
             tela_.addEventListener("touchstart",
