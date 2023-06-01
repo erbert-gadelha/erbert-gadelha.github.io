@@ -31,6 +31,23 @@ class Input {
 
                 this.input_teclado(event.key.toLowerCase());
             }, false);
+
+
+            document.querySelector(".textos").addEventListener('keydown', (event) => {
+
+                if([37,38,39,40].indexOf(event) > -1)
+                    event.preventDefault();                
+
+            }, false);
+
+            document.querySelector(".container").addEventListener('keydown', (event) => {
+
+                if([37,38,39,40].indexOf(event) > -1)
+                    event.preventDefault();                
+
+            }, false);
+
+
         //
         //  EVENTOS TOUCH
             let tela_ = document.getElementById("touchTarget");
@@ -49,9 +66,6 @@ class Input {
                     let y = (e.touches[0].clientY - br.top);
                     this.initial = [x, y];
 
-                    if(x < br.width)
-                        e.preventDefault();
-
                 }
             );
             
@@ -67,9 +81,6 @@ class Input {
                     let y = (e.touches[0].clientY - br.top);
 
                     this.final = [x, y];
-
-                    if(x < br.width)
-                        e.preventDefault();
 
                 }
             );
