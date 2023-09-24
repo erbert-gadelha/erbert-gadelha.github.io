@@ -566,11 +566,9 @@ for (let index = 0; index < projetos.length; index++) {
 
     element.addEventListener('click', (event) => {
         const id = 'auxiliar';
-        const filename = 'projeto_go-floresta.html';
 
         if(!moveu)
             loadHtml(id, projetos_[index])
-            //readTextFile(filename);
 
     }, false);
 
@@ -587,28 +585,17 @@ function reqListener () {
 
 function loadHtml(id, filename) {
 
-
-    let xhttp;
     let element = document.getElementById(id);
-    let file = filename;
 
-    if(file) {
-        xhttp = new XMLHttpRequest();
-        xhttp.onreadystatechange == function() {
-            if(this.readyState == 4) {
-                if(this.status == 200) {
-                    element.innerHTML = this.responseText;
-                } else if(this.status == 404) {
-                    element.innerHTML = "<h1>Page not Found. :c</h1>";
-                }
-            }
-        }
-        xhttp.onload = reqListener;
-        xhttp.open("get", file, true);
-        xhttp.send();
-
-        return;
-    }
+    fetch(`./${filename}`)
+    .then(response => response.text())
+    .then(htmlData => {
+        element.innerHTML = htmlData;
+    })
+    .catch(error => {
+        element.innerHTML = "<h1>Page not Found. :c</h1>";
+        console.error('Erro ao carregar o HTML:', error);
+    });
 }
 
 
