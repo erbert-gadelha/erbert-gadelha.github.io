@@ -33,14 +33,14 @@ class Input {
             }, false);
 
 
-            document.querySelector(".textos").addEventListener('keydown', (event) => {
+            document.getElementById("container").addEventListener('keydown', (event) => {
 
                 if([37,38,39,40].indexOf(event) > -1)
                     event.preventDefault();                
 
             }, false);
 
-            document.querySelector(".container").addEventListener('keydown', (event) => {
+            document.getElementById("container").addEventListener('keydown', (event) => {
 
                 if([37,38,39,40].indexOf(event) > -1)
                     event.preventDefault();                
@@ -306,7 +306,7 @@ class Moviment {
                 document.querySelector(".fil5").style.animation = "rainbow2 3s infinite linear";
     
                 
-                document.querySelector(".fil4").style.borderRadius = "500px";
+                document.querySelector(".fil4").style.borderRadius = "360px";
                 document.querySelector(".fil4").style.outline = "white solid 100px";
     
                 
@@ -435,11 +435,11 @@ class Moviment {
                 // SE TELA TIVE ESPACO
                 if(window.innerWidth > 900) {
                     aux1.style.animation = 'none';
-                    aux1.style.marginLeft = '-490px';
+                    aux1.style.marginLeft = 'calc( 10px - var(--game-max-size))';
                 }
                 else {
                     aux1.style.animation = 'none';
-                    aux1.style.marginLeft = 'calc(-100vw + 75px)';
+                    aux1.style.marginLeft = 'calc( 10px - var(--game-min-size))';
                 }
 
             } else {
@@ -601,7 +601,7 @@ function loadHtml(id, filename) {
 
 
 
-const container = document.querySelector('.container');
+const container = document.getElementById('container');
 const scroll_tuto = document.querySelector('.tutorial');
 const scroll_info = document.querySelector('.info');
 const scroll_proj = document.querySelector('.projetos');
