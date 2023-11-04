@@ -18,12 +18,20 @@
   --blue: #1b77f3;
   --red: #5c5051;
   --green: #2fcc2f;
+  --background-color: #444444;
   --tb-blue:#61aef7;
   --tb-red:#ff6d6d;
   --tb-green:#4bf16f;
   --tb-purple:#eb63f0;
   --game-max-size: 360px;
   --game-min-size: calc(100vw - 75px);
+  --anim-shrink: 0.9;
+  --anim-grow: 1.1;
+  --player-color0: #F0BE09;
+  --player-color1: #FFD22E;
+  --player-color-anim0: none;
+  --player-color-anim1: none;
+  --handlebar-color: #FFD22E;
 }
 
 html {
@@ -41,7 +49,9 @@ body {
 
 .secao:not(:first-of-type):not(:last-of-type) {
   background-image: url('data:image/svg+xml,%3Csvg width="52" height="26" viewBox="0 0 52 26" xmlns="http://www.w3.org/2000/svg"%3E%3Cg fill="none" fill-rule="evenodd"%3E%3Cg fill="%239C92AC" fill-opacity="0.1"%3E%3Cpath d="M10 10c0-2.21-1.79-4-4-4-3.314 0-6-2.686-6-6h2c0 2.21 1.79 4 4 4 3.314 0 6 2.686 6 6 0 2.21 1.79 4 4 4 3.314 0 6 2.686 6 6 0 2.21 1.79 4 4 4v2c-3.314 0-6-2.686-6-6 0-2.21-1.79-4-4-4-3.314 0-6-2.686-6-6zm25.464-1.95l8.486 8.486-1.414 1.414-8.486-8.486 1.414-1.414z" /%3E%3C/g%3E%3C/g%3E%3C/svg%3E');
-  background-color: white;
+  background-color: var(--light-grey);
+  box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;
+  max-width: 1100px;
   border-radius: 24px;
   -webkit-border-radius: 24px;
   -moz-border-radius: 24px;
@@ -68,6 +78,7 @@ section:not(:first-of-type):not(:last-of-type)::before {
   width: 110%;
   top: 0px;
   left: 0px;
+  border-bottom: var(--deep-grey) solid 2px;
 }
 
 section:nth-of-type(2)::before {
@@ -89,12 +100,14 @@ section:nth-of-type(5)::before {
 #sections {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  align-items: center;
+  justify-content: center;
+  gap: 64px;
   width: 98%;
-  padding: 0 1%;
+  background-color: var(--deep-grey);
+  padding: 0 10px;
   height: -moz-fit-content;
   height: fit-content;
-  background-color: var(--deep-grey);
 }
 
 #container {
@@ -103,23 +116,22 @@ section:nth-of-type(5)::before {
   max-height: 100vh;
   overflow-x: hidden;
   overflow-y: auto;
+  background-color: var(--background-color);
 }
 #container .inprogress {
   height: 100vh;
-  background-color: var(--deep-grey);
 }
 
 #tutorial {
   min-height: 100vh;
-  background-color: var(--deep-grey);
 }
 #tutorial ::-moz-selection {
   color: white;
-  background: yellow;
+  background: #FFD22E;
 }
 #tutorial ::selection {
   color: white;
-  background: yellow;
+  background: #FFD22E;
 }
 #tutorial .t1 {
   display: flex;
@@ -127,21 +139,22 @@ section:nth-of-type(5)::before {
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  gap: 5px;
+  gap: 0px;
   padding: 0;
   color: var(--medium-grey);
-}
-#tutorial .t1 div {
-  display: flex;
-  flex-direction: row;
-  gap: 5px;
 }
 #tutorial .t1 h1 {
   height: 50px;
   font-size: min(4vw, 30px);
   text-align: center;
 }
-#tutorial .t1 .tecla {
+#tutorial .t1 #grid div {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+#tutorial .t1 #grid span {
+  margin: 3px;
   width: 60px;
   height: 60px;
   text-align: center;
@@ -151,10 +164,6 @@ section:nth-of-type(5)::before {
   color: var(--medium-grey);
   border: var(--medium-grey) solid 8px;
   border-radius: 15px;
-  -webkit-border-radius: 15px;
-  -moz-border-radius: 15px;
-  -ms-border-radius: 15px;
-  -o-border-radius: 15px;
 }
 #tutorial .t2 {
   display: none;
@@ -175,8 +184,9 @@ section:nth-of-type(5)::before {
 }
 
 #info {
-  padding-top: 40px;
-  min-height: 100vh;
+  padding-top: 50px;
+  padding-bottom: 16px 0;
+  min-height: 70vh;
 }
 #info ::-moz-selection {
   color: white;
@@ -185,6 +195,11 @@ section:nth-of-type(5)::before {
 #info ::selection {
   color: white;
   background: var(--tb-blue);
+}
+#info #info-header {
+  outline: red 2px solid;
+  display: flex;
+  flex-direction: row;
 }
 #info img {
   height: 200px;
@@ -226,12 +241,6 @@ section:nth-of-type(5)::before {
   text-align: justify;
   text-justify: inter-word;
 }
-#info div {
-  margin: 40px;
-  display: flex;
-  gap: 60px;
-}
-
 #projetos {
   display: block;
   overflow: hidden;
@@ -248,18 +257,22 @@ section:nth-of-type(5)::before {
   color: white;
   background: var(--tb-green);
 }
-#projetos #wasd {
-  scrollbar-width: none;
-}
-#projetos #wasd::-webkit-scrollbar {
+#projetos #project_slider::-webkit-scrollbar {
   display: none;
 }
 #projetos #auxiliar {
+  background-color: transparent;
   height: -moz-fit-content;
   height: fit-content;
   width: 100%;
   padding: none;
   margin: none;
+}
+#projetos #auxiliar div {
+  background-color: transparent;
+}
+#projetos #auxiliar a {
+  color: var(--green);
 }
 #projetos #projeto_fechar {
   position: absolute;
@@ -276,17 +289,41 @@ section:nth-of-type(5)::before {
   -ms-transform: scale(1.2);
   -o-transform: scale(1.2);
 }
-#projetos #wasd {
-  display: flex;
-  width: 100%;
+#projetos #project_slider_container {
+  position: relative;
+  background-color: rgba(255, 255, 255, 0.25);
+  width: calc(100% - 40px - 20px);
   height: 150px;
-  overflow: auto;
-  gap: 10px;
+  margin: 0 10px;
+  overflow: hidden;
   padding: 10px 20px;
-  background-color: var(--light-grey);
+}
+#projetos #project_slider {
+  display: flex;
+  scrollbar-width: none;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  padding: 0px 20px;
+  gap: 16px;
   cursor: grab;
 }
-#projetos #wasd .projeto {
+#projetos #project_slider .projeto:not(:last-child)::before {
+  content: "";
+  position: absolute;
+  height: 80%;
+  width: 0px;
+  border-left: 1px solid var(--deep-grey);
+  right: -8px;
+  top: 10%;
+}
+#projetos #project_slider .projeto {
+  height: 150px;
+  width: 250px;
+  position: relative;
+  overflow: visible;
+}
+#projetos #project_slider .projeto div {
   position: relative;
   height: 150px;
   width: 250px;
@@ -300,7 +337,7 @@ section:nth-of-type(5)::before {
   -o-border-radius: 20px;
   background-color: var(--green);
 }
-#projetos #wasd .projeto img {
+#projetos #project_slider .projeto div img {
   width: 100%;
   height: 100%;
   background-size: cover;
@@ -314,18 +351,20 @@ section:nth-of-type(5)::before {
   -ms-transition: 1s ease-in-out all;
   -o-transition: 1s ease-in-out all;
 }
-#projetos #wasd .projeto h1 {
+#projetos #project_slider .projeto div h1 {
   position: absolute;
+  left: 0;
+  z-index: 5;
   bottom: 0;
   height: 50px;
-  width: 110%;
+  width: 230px;
   padding: 10px;
   background-color: rgba(255, 255, 255, 0.93);
   -webkit-user-select: none;
      -moz-user-select: none;
           user-select: none;
 }
-#projetos #wasd .projeto:hover img {
+#projetos #project_slider .projeto:hover img {
   transform: scale(1.05);
   -webkit-transform: scale(1.05);
   -moz-transform: scale(1.05);
@@ -333,10 +372,10 @@ section:nth-of-type(5)::before {
   -o-transform: scale(1.05);
   opacity: 0.8;
 }
-#projetos #wasd .projeto:last-of-type {
+#projetos #project_slider .projeto:last-of-type {
   margin-right: 50px;
 }
-#projetos #wasd .ferramentas {
+#projetos #project_slider .ferramentas {
   display: flex;
   flex-direction: row;
   width: 100%;
@@ -380,17 +419,11 @@ section:nth-of-type(5)::before {
   flex-direction: row;
 }
 #formacoes #cards .formacao {
-  background-color: var(--whitesmoke);
+  background-color: var(--light-grey);
   padding: 10px;
-  border: var(--light-grey) 1px solid;
   max-width: 420px;
   width: 40%;
   height: 120px;
-  border-radius: 10px;
-  -webkit-border-radius: 10px;
-  -moz-border-radius: 10px;
-  -ms-border-radius: 10px;
-  -o-border-radius: 10px;
 }
 
 #skills {
@@ -435,9 +468,9 @@ section:nth-of-type(5)::before {
   flex-direction: column;
   height: 200px;
   width: 200px;
-  background-color: var(--whitesmoke);
+  background-color: var(--light-grey);
+  border: var(--deep-grey) 1px solid;
   padding: 10px;
-  border: var(--light-grey) 1px solid;
   border-radius: 10px;
   -webkit-border-radius: 10px;
   -moz-border-radius: 10px;
@@ -450,20 +483,21 @@ section:nth-of-type(5)::before {
   image-rendering: pixelated;
 }
 
-.redesocial {
-  fill: #1b77f3;
+#social-media {
+  margin: 40px;
+  display: flex;
+  gap: 60px;
 }
-
-.redesocial:hover {
-  fill: #166ad8;
+#social-media a > svg {
+  width: 50px;
+  height: 50px;
+}
+#social-media a > svg:hover {
   transform: scale(1.05);
-  -webkit-transform: scale(1.05);
-  -moz-transform: scale(1.05);
-  -ms-transform: scale(1.05);
-  -o-transform: scale(1.05);
 }
 
 .colapse {
+  box-shadow: rgba(0, 0, 0, 0.1) 8px 3px 8px;
   display: flex;
   align-items: center;
   position: absolute;
@@ -473,27 +507,24 @@ section:nth-of-type(5)::before {
   width: 10px;
   padding: 0;
   margin: 0;
-  z-index: 50000;
+  z-index: 2;
   background-color: var(--deep-grey);
   overflow: visible;
 }
-.colapse button {
+.colapse #colapse_button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
   position: absolute;
+  box-shadow: rgba(0, 0, 0, 0.2) 8px 3px 8px;
+  z-index: -1;
   font-size: 15px;
   height: 60px;
   width: 35px;
   padding-right: 5px;
+  cursor: pointer;
   background-color: var(--deep-grey);
   border-radius: 0px 1000px 1000px 0px;
-}
-.colapse button svg > g {
-  fill: rgb(255, 255, 255);
-}
-.colapse button .arrow {
-  transform: rotateZ(-90deg);
-  fill: white;
-  display: block;
-  margin: auto;
 }
 .colapse button:focus {
   outline: none;
@@ -506,8 +537,21 @@ section:nth-of-type(5)::before {
   -o-transform: translateX(-50px);
 }
 
+#container::-webkit-scrollbar-thumb {
+  background: var(--handlebar-color);
+  border-radius: 80px;
+}
+
 #container::-webkit-scrollbar-track {
   background: var(--deep-grey);
+}
+
+#container::-webkit-scrollbar {
+  width: 10px;
+}
+
+#container::-webkit-scrollbar-thumb:hover {
+  background: white;
 }
 
 @media screen and (min-width: 900px) {
@@ -515,14 +559,20 @@ section:nth-of-type(5)::before {
     width: var(--game-max-size);
     position: relative;
   }
+  body {
+    background-color: var(--deep-grey);
+  }
 }
 @media screen and (max-width: 900px) {
+  body {
+    background-color: var(--deep-grey);
+  }
+  #sections {
+    padding: 12.5px;
+  }
   .game {
     position: absolute;
     width: var(--game-min-size);
-  }
-  .tutorial {
-    background-color: white !important;
   }
   #cards {
     flex-direction: column !important;
@@ -535,7 +585,7 @@ section:nth-of-type(5)::before {
 }
 .game {
   display: flex;
-  z-index: 1;
+  z-index: 1000;
   height: 100vh;
   background-color: var(--deep-grey);
   align-items: center;
@@ -553,129 +603,138 @@ section:nth-of-type(5)::before {
   color: white;
 }
 .game #player {
-  display: block;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   position: absolute;
   left: 50px;
   top: 50px;
-  transition: 200ms ease-out all;
-  -webkit-transition: 200ms ease-out all;
-  -moz-transition: 200ms ease-out all;
-  -ms-transition: 200ms ease-out all;
-  -o-transition: 200ms ease-out all;
+}
+.game #player image {
+  display: block;
+  /*filter: saturate(200%);
+  -webkit-filter: saturate(200%);
+  filter: hue-rotate(90deg);*/
 }
 @keyframes direita {
   0% {
-    height: 50px;
-    width: 50px;
+    transform: scale(1, 1);
+    -webkit-transform: scale(1, 1);
+    -moz-transform: scale(1, 1);
+    -ms-transform: scale(1, 1);
+    -o-transform: scale(1, 1);
   }
   60% {
-    margin-top: 2.5px;
-    margin-left: -5px;
-    height: 45px;
-    width: 55px;
+    transform: scale(var(--anim-grow), var(--anim-shrink));
+    -webkit-transform: scale(var(--anim-grow), var(--anim-shrink));
+    -moz-transform: scale(var(--anim-grow), var(--anim-shrink));
+    -ms-transform: scale(var(--anim-grow), var(--anim-shrink));
+    -o-transform: scale(var(--anim-grow), var(--anim-shrink));
   }
   80% {
-    margin-top: -2.5px;
-    margin-left: 5px;
-    height: 55px;
-    width: 45px;
+    transform: scale(var(--anim-shrink), var(--anim-grow));
+    -webkit-transform: scale(var(--anim-shrink), var(--anim-grow));
+    -moz-transform: scale(var(--anim-shrink), var(--anim-grow));
+    -ms-transform: scale(var(--anim-shrink), var(--anim-grow));
+    -o-transform: scale(var(--anim-shrink), var(--anim-grow));
   }
   100% {
-    height: 50px;
-    width: 50px;
+    transform: scale(1, 1);
+    -webkit-transform: scale(1, 1);
+    -moz-transform: scale(1, 1);
+    -ms-transform: scale(1, 1);
+    -o-transform: scale(1, 1);
   }
 }
 @keyframes esquerda {
   0% {
-    height: 50px;
-    width: 50px;
+    transform: scale(1, 1);
+    -webkit-transform: scale(1, 1);
+    -moz-transform: scale(1, 1);
+    -ms-transform: scale(1, 1);
+    -o-transform: scale(1, 1);
   }
   60% {
-    margin-top: 2.5px;
-    margin-left: 5px;
-    height: 45px;
-    width: 55px;
+    transform: scale(var(--anim-grow), var(--anim-shrink));
+    -webkit-transform: scale(var(--anim-grow), var(--anim-shrink));
+    -moz-transform: scale(var(--anim-grow), var(--anim-shrink));
+    -ms-transform: scale(var(--anim-grow), var(--anim-shrink));
+    -o-transform: scale(var(--anim-grow), var(--anim-shrink));
   }
   80% {
-    margin-top: -2.5px;
-    height: 55px;
-    width: 45px;
+    transform: scale(var(--anim-shrink), var(--anim-grow));
+    -webkit-transform: scale(var(--anim-shrink), var(--anim-grow));
+    -moz-transform: scale(var(--anim-shrink), var(--anim-grow));
+    -ms-transform: scale(var(--anim-shrink), var(--anim-grow));
+    -o-transform: scale(var(--anim-shrink), var(--anim-grow));
   }
   100% {
-    height: 50px;
-    width: 50px;
+    transform: scale(1, 1);
+    -webkit-transform: scale(1, 1);
+    -moz-transform: scale(1, 1);
+    -ms-transform: scale(1, 1);
+    -o-transform: scale(1, 1);
   }
 }
 @keyframes baixo {
   0% {
-    height: 50px;
-    width: 50px;
+    transform: scale(1, 1);
+    -webkit-transform: scale(1, 1);
+    -moz-transform: scale(1, 1);
+    -ms-transform: scale(1, 1);
+    -o-transform: scale(1, 1);
   }
   60% {
-    margin-top: -5px;
-    margin-left: 2.5px;
-    height: 55px;
-    width: 45px;
+    transform: scale(var(--anim-shrink), var(--anim-grow));
+    -webkit-transform: scale(var(--anim-shrink), var(--anim-grow));
+    -moz-transform: scale(var(--anim-shrink), var(--anim-grow));
+    -ms-transform: scale(var(--anim-shrink), var(--anim-grow));
+    -o-transform: scale(var(--anim-shrink), var(--anim-grow));
   }
   80% {
-    margin-top: 5px;
-    margin-left: -2.5px;
-    height: 45px;
-    width: 55px;
+    transform: scale(var(--anim-grow), var(--anim-shrink));
+    -webkit-transform: scale(var(--anim-grow), var(--anim-shrink));
+    -moz-transform: scale(var(--anim-grow), var(--anim-shrink));
+    -ms-transform: scale(var(--anim-grow), var(--anim-shrink));
+    -o-transform: scale(var(--anim-grow), var(--anim-shrink));
   }
   100% {
-    height: 50px;
-    width: 50px;
+    transform: scale(1, 1);
+    -webkit-transform: scale(1, 1);
+    -moz-transform: scale(1, 1);
+    -ms-transform: scale(1, 1);
+    -o-transform: scale(1, 1);
   }
 }
 @keyframes cima {
   0% {
-    height: 50px;
-    width: 50px;
-    border-radius: 0px;
-    -webkit-border-radius: 0px;
-    -moz-border-radius: 0px;
-    -ms-border-radius: 0px;
-    -o-border-radius: 0px;
+    transform: scale(1, 1);
+    -webkit-transform: scale(1, 1);
+    -moz-transform: scale(1, 1);
+    -ms-transform: scale(1, 1);
+    -o-transform: scale(1, 1);
   }
   60% {
-    margin-top: -5px;
-    margin-left: 2.5px;
-    height: 55px;
-    width: 45px;
+    transform: scale(var(--anim-shrink), var(--anim-grow));
+    -webkit-transform: scale(var(--anim-shrink), var(--anim-grow));
+    -moz-transform: scale(var(--anim-shrink), var(--anim-grow));
+    -ms-transform: scale(var(--anim-shrink), var(--anim-grow));
+    -o-transform: scale(var(--anim-shrink), var(--anim-grow));
   }
   80% {
-    margin-top: -2.5px;
-    margin-left: -2.5px;
-    height: 45px;
-    width: 55px;
-    border-radius: 500px;
+    transform: scale(var(--anim-grow), var(--anim-shrink));
+    -webkit-transform: scale(var(--anim-grow), var(--anim-shrink));
+    -moz-transform: scale(var(--anim-grow), var(--anim-shrink));
+    -ms-transform: scale(var(--anim-grow), var(--anim-shrink));
+    -o-transform: scale(var(--anim-grow), var(--anim-shrink));
   }
   100% {
-    height: 50px;
-    width: 50px;
-    border-radius: 0px;
-    -webkit-border-radius: 0px;
-    -moz-border-radius: 0px;
-    -ms-border-radius: 0px;
-    -o-border-radius: 0px;
+    transform: scale(1, 1);
+    -webkit-transform: scale(1, 1);
+    -moz-transform: scale(1, 1);
+    -ms-transform: scale(1, 1);
+    -o-transform: scale(1, 1);
   }
-}
-.game #player .anim1 {
-  animation: direita 500ms linear;
-  -webkit-animation: direita 500ms linear;
-}
-.game #player .anim2 {
-  animation: esquerda 500ms linear;
-  -webkit-animation: esquerda 500ms linear;
-}
-.game #player .anim3 {
-  animation: baixo 500ms linear;
-  -webkit-animation: baixo 500ms linear;
-}
-.game #player .anim4 {
-  animation: cima 250ms ease-out;
-  -webkit-animation: cima 250ms ease-out;
 }
 @keyframes rainbow1 {
   0% {
@@ -726,19 +785,22 @@ section:nth-of-type(5)::before {
     fill: rgb(230, 56, 94);
   }
 }
-.game #player .fil3 {
-  fill: transparent;
-}
-.game #player .fil4 {
-  fill: #f0be09;
+.game #player .fil0 {
+  fill: var(--player-color0);
+  stroke: var(--deep-grey);
+  animation: var(--player-color-anim0);
+  -webkit-animation: var(--player-color-anim0);
   transition: 100ms ease-out all;
   -webkit-transition: 100ms ease-out all;
   -moz-transition: 100ms ease-out all;
   -ms-transition: 100ms ease-out all;
   -o-transition: 100ms ease-out all;
 }
-.game #player .fil5 {
-  fill: #ffd22e;
+.game #player .fil1 {
+  fill: var(--player-color1);
+  stroke: var(--deep-grey);
+  animation: var(--player-color-anim1);
+  -webkit-animation: var(--player-color-anim1);
   transition: 100ms ease-out all;
   -webkit-transition: 100ms ease-out all;
   -moz-transition: 100ms ease-out all;
@@ -820,4 +882,49 @@ section:nth-of-type(5)::before {
   100% {
     margin-left: 0;
   }
+}
+
+.border-radius-10px {
+  border-radius: 10px;
+  -webkit-border-radius: 10px;
+  -moz-border-radius: 10px;
+  -ms-border-radius: 10px;
+  -o-border-radius: 10px;
+}
+
+.dark-outline {
+  outline: var(--medium-grey) 1px solid;
+}
+
+.slider_button {
+  display: flex;
+  height: 100%;
+  width: 24px;
+  background-color: var(--tb-green);
+  position: absolute;
+  z-index: 10;
+  align-items: center;
+  justify-content: center;
+  top: 0;
+  cursor: pointer;
+}
+
+.slider_button:first-of-type {
+  left: 0;
+}
+.slider_button:first-of-type svg {
+  transform: scale(-1, 1);
+}
+
+.slider_button:last-of-type {
+  right: 0;
+}
+
+#bolo {
+  width: 100%;
+  height: 410px;
+  padding: none;
+  margin: none;
+  max-height: -moz-min-content;
+  max-height: min-content;
 }/*# sourceMappingURL=style.css.map */

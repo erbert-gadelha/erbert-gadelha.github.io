@@ -6,8 +6,34 @@ if(navigator.userAgent.includes("Android")) {
     document.querySelector('.tutorial').style.display = 'none';
 }
 
+class Queue {
+    constructor() {
+      this.elements = {};
+      this.head = 0;
+      this.tail = 0;
+    }
+    enqueue(element) {
+      this.elements[this.tail] = element;
+      this.tail++;
+    }
+    dequeue() {
+      const item = this.elements[this.head];
+      delete this.elements[this.head];
+      this.head++;
+      return item;
+    }
+    peek() {
+      return this.elements[this.head];
+    }
+    get length() {
+      return this.tail - this.head;
+    }
+    get isEmpty() {
+      return this.length === 0;
+    }
+}
 
-class Input {
+class Input {    
     
     constructor(_moviment) {
         
@@ -160,13 +186,15 @@ class Moviment {
         this.game_is_open = true;
         
         this.player_element = document.querySelector('.player1');
-        document.querySelector('.arrow').style.transform = 'rotate(90deg)';
+        document.getElementById('arrow').style.transform = 'scale(1, 1)';
       
         this.#SetColliders();
         this.#SetClickEvents();
 
         this.actual_player_anim = 0;
         this.cast_view = 0;
+
+        this.moveQueue = new Queue();
     }
 
     async #AllowToCastView() {
@@ -272,47 +300,54 @@ class Moviment {
 
     #player_colors(index) {
 
-        document.querySelector(".fil4").style.animation = 'none';
-        document.querySelector(".fil5").style.animation = 'none';
-        document.querySelector(".fil4").style.outline = 'none';
+        document.documentElement.style.setProperty('--player-color-anim0', 'none');
+        document.documentElement.style.setProperty('--player-color-anim1', 'none');
     
+
+
         switch(index) {
             case 'white':
-                document.querySelector(".fil4").style.fill = "#d4d4d4";
-                document.querySelector(".fil5").style.fill = "#ffffff";
+                document.documentElement.style.setProperty('--player-color0', "#d4d4d4");
+                document.documentElement.style.setProperty('--player-color1', "#ffffff");
+
+                //document.documentElement.style.setProperty('--handlebar-color', "#d4d4d4");
                 break;
             case 'yellow':
-                document.querySelector(".fil4").style.fill = "#F0BE09";
-                document.querySelector(".fil5").style.fill = "#FFD22E";
+                document.documentElement.style.setProperty('--player-color0', "#F0BE09");
+                document.documentElement.style.setProperty('--player-color1', "#FFD22E");
+
+                
+                document.documentElement.style.setProperty('--handlebar-color', "#FFD22E");
                 break;
             case 'blue':
-                document.querySelector(".fil4").style.fill = "#0099DB";
-                document.querySelector(".fil5").style.fill = "#0AB2FA";
+                document.documentElement.style.setProperty('--player-color0', "#0099DB");
+                document.documentElement.style.setProperty('--player-color1', "#0AB2FA");
+
+                document.documentElement.style.setProperty('--handlebar-color', "#0AB2FA");
                 break;
             case 'red':
-                document.querySelector(".fil4").style.fill = "#ff4b4b";
-                document.querySelector(".fil5").style.fill = "#ff6d6d";
+                document.documentElement.style.setProperty('--player-color0', "#ff4b4b");
+                document.documentElement.style.setProperty('--player-color1', "#ff6d6d");
+
+                document.documentElement.style.setProperty('--handlebar-color', "#ff6d6d");
                 break;
             case 'green':
-                document.querySelector(".fil4").style.fill = "#29eb90";
-                document.querySelector(".fil5").style.fill = "#46ffa2";
+                document.documentElement.style.setProperty('--player-color0', "#29eb90");
+                document.documentElement.style.setProperty('--player-color1', "#46ffa2");
+                
+                document.documentElement.style.setProperty('--handlebar-color', "#46ffa2");
                 break;
             case 'pink':
-                document.querySelector(".fil4").style.fill = "#a547ad";
-                document.querySelector(".fil5").style.fill = "#eb63f0";
+                document.documentElement.style.setProperty('--player-color0', "#a547ad");
+                document.documentElement.style.setProperty('--player-color1', "#eb63f0");
+                
+                document.documentElement.style.setProperty('--handlebar-color', "#eb63f0");
                 break;
             case 'rainbow':
-                document.querySelector(".fil4").style.animation = "rainbow1 3s infinite linear";
-                document.querySelector(".fil5").style.animation = "rainbow2 3s infinite linear";
-    
-                
-                document.querySelector(".fil4").style.borderRadius = "360px";
-                document.querySelector(".fil4").style.outline = "white solid 100px";
-    
-                
-                //document.querySelector(".fil5").style.animation-delay = "0.7";
-    
-                //document.querySelector(".fil5").style.fill = "#00000050";
+                document.documentElement.style.setProperty('--player-color-anim0', 'rainbow1 3s infinite linear');
+                document.documentElement.style.setProperty('--player-color-anim1', 'rainbow2 3s infinite linear');
+
+                document.documentElement.style.setProperty('--handlebar-color', "#d4d4d4");
                 break;
     
         }
@@ -322,11 +357,20 @@ class Moviment {
         //if(this.cast_view > 0)
         //    return;
 
-        
+        const element = document.querySelector(`.${class_name}`);
+
+        const w_height = window.innerHeight,
+              e_height = element.getBoundingClientRect().height;
+
+        const block = (w_height >= e_height ? 'center' : 'start');
+
+
         if(navigator.userAgent.includes("Android"))
-            document.querySelector(`.${class_name}`).scrollIntoView({ behavior: 'smooth', block: 'start'});
+            element.scrollIntoView({ behavior: 'smooth', block: block});
         else
-            document.querySelector(`.${class_name}`).scrollIntoView({ behavior: 'smooth', block: 'start'});
+            element.scrollIntoView({ behavior: 'smooth', block: block});
+
+
         this.#AllowToCastView();
         
     }
@@ -383,36 +427,62 @@ class Moviment {
         
     }
 
-    move_continuous(direc) {
+    move_continuous(direc_) {
 
-        let bool = true;
-        let aux = 1;
-    
-        while(aux < 10 & bool) {
-            bool = this.move_to(direc);
-            aux++;
-        };
+        this.moveQueue.enqueue(direc_);
+        if(this.moveQueue.length > 1)
+            return;
 
-        if(aux > 2) {
-
-            this.player_element.style.transition = (aux*50) + 'ms ease-out all';
-
-            if(direc[0] == 1)
-                this.player_element.style.animation = 'direita '+(aux+2)*50+'ms linear';
-            else if (direc[0] == -1)
-                this.player_element.style.animation = 'esquerda '+(aux+2)*50+'ms linear';
-            else if (direc[1] == 1)
-                this.player_element.style.animation = 'baixo '+(aux+2)*50+'ms linear';
-            else
-                this.player_element.style.animation = 'cima '+(aux+2)*50+'ms linear';
-
-            this.player_element.style.left = (this.x_cordinate * 50) + 'px';
-            this.player_element.style.top  = (this.y_cordinate * 50) + 'px';
+        const sliding = async() => {
             
-    
-            this.#refresh_gui(true);
-        }
+            while(this.moveQueue.length > 0) {
+                const direc = this.moveQueue.peek();
+                let aux = 0;
+
+                while(this.move_to(direc))
+                    aux++;
         
+                if(aux > 0) {
+                    aux+=2;
+                    
+                    // PLAYER TRANSITION
+                    this.player_element.style.transition = (aux*50) + 'ms ease-out all';
+                    
+                    document.documentElement.style.setProperty('--anim-shrink', (1-aux/20));
+                    document.documentElement.style.setProperty('--anim-grow', (1+aux/20));
+                    
+                    
+
+                    // PLAYER ANIMATION
+                    this.player_element.style.animation = `${this.#direc_to_string(direc)} ${aux*70}ms linear`;
+                    
+                    // PLAYER POSITION
+                    this.player_element.style.left = `${this.x_cordinate * 50}px`;
+                    this.player_element.style.top  = `${this.y_cordinate * 50}px`;
+                    
+                    // CAST WHERE THE PLAYER IS LANDING
+                    this.#refresh_gui(true);
+                }
+                
+                // AWAIT FOR THE PLAYER TO LAND
+                await new Promise(resolve => setTimeout(resolve, ((aux-1)*50)));
+                this.moveQueue.dequeue();
+            }
+        }
+
+        sliding();
+    }
+
+    #direc_to_string(param) {
+
+        if(param[0] == 1)
+            return 'direita';
+        else if (param[0] == -1)
+            return 'esquerda';
+        else if (param[1] == 1)
+            return 'baixo';
+        else
+            return 'cima';
     }
 
     open_board(open) {
@@ -426,7 +496,7 @@ class Moviment {
             else
                 aux1.style.animation = 'abrir_game 400ms ease-out forwards';
 
-            document.querySelector('.arrow').style.transform = 'rotate(90deg)';
+            document.getElementById('arrow').style.transform = 'scale(1, 1)';
         }
         else {// FOCA NO CONTAINER
             
@@ -450,7 +520,7 @@ class Moviment {
                     aux1.style.animation = 'fechar_game_2 400ms ease-out forwards';
             }
 
-            document.querySelector('.arrow').style.transform = 'rotate(-90deg)';
+            document.getElementById('arrow').style.transform = 'scale(-1, 1)';
         }
 
         this.game_is_open = open;
@@ -482,9 +552,8 @@ const moviment = new Moviment();
 const input = new Input(moviment);
 //const game = document.getElementById("game");
 
-document.getElementById('botao').addEventListener('click', (event) => {
+document.getElementById('colapse_button').addEventListener('click', (event) => {
     moviment.open_board(!moviment.game_is_open);
-    //window.alert('botao');
 }, false);
 window.addEventListener('resize', function(event) {
     moviment.open_board(moviment.game_is_open);
@@ -543,7 +612,7 @@ class DragToScroll {
     }
 }
 
-let drag = new DragToScroll('wasd');
+let drag = new DragToScroll('project_slider');
 
 
 let projetos = document.querySelectorAll(".projeto");
@@ -586,8 +655,10 @@ function reqListener () {
 function loadHtml(id, filename) {
 
     let element = document.getElementById(id);
+    
 
-    fetch(`./${filename}`)
+    fetch(`https://erbert-gadelha.github.io/meu-site/${filename}`)
+    //fetch(`./${filename}`)
     .then(response => response.text())
     .then(htmlData => {
         element.innerHTML = htmlData;
@@ -645,3 +716,22 @@ container.addEventListener('scroll', function () {
 }, true);
 
 
+
+let slider_button = document.querySelectorAll(".slider_button");
+
+slider_button.forEach((button, index) => {
+
+    const slider_container = document.getElementById('project_slider');
+    const offset = ((index*2)-1);
+
+    button.addEventListener('click', () => {
+        
+        slider_container.scrollBy({ left: ((266) * offset), behavior: 'smooth' });
+
+        /*
+            const slide_view_width = slider_container.getBoundingClientRect().width;
+            slider_container.scrollBy({ left: (slide_view_width * offset), behavior: 'smooth' });
+        */
+
+    }, false)
+});
