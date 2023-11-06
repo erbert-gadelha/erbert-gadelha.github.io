@@ -1,0 +1,97 @@
+<style>
+
+  .flex-column {
+    display: flex;
+    flex-direction: column;
+  }
+
+  #projeto_container {
+    display: flex;
+    flex-direction: column;
+  }
+
+  #projeto_img {
+    background-size: cover;
+    background-position: center;
+    height: 550px;
+    width: 100%;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  #projeto_div {
+    padding: 20px;
+    padding-top: 0;
+    width: fit-content;
+    background-color: rgba(255, 255, 255);
+  }
+
+  #projeto_ferramentas {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 20%;
+    background-color: #e6e6e6;
+  }
+
+
+  @media screen and (min-width: 950px) {
+    #projeto_container {
+      flex-direction: row;
+      flex-wrap: nowrap;
+    }
+
+    
+  #projeto_div {
+    padding-top: 20px;
+  }
+
+    #projeto_img {
+      height: 650px;
+      width: 600px;
+      min-width: 500px;
+      background-position: left;
+
+      margin-left: -1px;
+
+      border-radius: 0 30px 30px 0;
+    }
+  }
+
+</style>
+
+
+<content id="projeto_container">
+  <iframe id="projeto_img" src="https://erbert-gadelha.github.io/colisions_simul/index.html""></iframe>
+  <div id="projeto_div">
+    <h1>DotCollider</h1>
+    <span>
+      A fim de testar as capicades do JavaScript, desenvolvi esse simulador de colisões. Onde também pude colocar em prática meus conhecimentos em algebra linear.
+      <br><br>
+      <a href="https://github.com/erbert-gadelha/colisions_simul" target="_blank">repositorio do projeto</a>
+      <br><br>
+
+      <div style="display: flex; flex-direction: row; gap: 0px">
+
+        <div class="flex-column" style="text-align: end;">
+          <span><b>botão esquerdo</b></span>
+          <span><b>botão central</b></span>
+          <span><b>botão direito</b></span>
+        </div>
+
+        <div class="flex-column">
+          <span>&#160:&#160&#160Cria uma nova esfera </span>
+          <span>&#160:&#160&#160Atrai as esferas </span>
+          <span>&#160:&#160&#160Repele as esferas </span>
+        </div>
+      </div>
+
+    </span>
+      
+      <h5 id="projeto_ferramentas">
+        <svg width="100" height="100">  
+          <image xlink:href="images/projetos/logos/icons8-javascript.svg" width="90" height="90"/>  
+        </svg>
+      </h5>
+  </div>
+</content>
