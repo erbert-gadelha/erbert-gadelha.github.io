@@ -55,7 +55,6 @@ class Input {
                 this.input_teclado(event.key.toLowerCase());
             }, false);
 
-
             document.getElementById("container").addEventListener('keydown', (event) => {
 
                 if([37,38,39,40].indexOf(event) > -1)
@@ -70,17 +69,19 @@ class Input {
 
             }, false);
 
-
+        //
         //
         //  EVENTOS TOUCH
             let tela_ = document.getElementById("touchTarget");
-            
             let moviment_ = this.moviment;
-            //console.log(this.moviment);
+
+            
             tela_.addEventListener("touchstart",
                 function clicked2(e) {
 
-                    if(!moviment_.game_is_open)
+                    e.preventDefault();
+
+                    if(!moviment_.game_container_is_open)
                         return;
 
                     let br = tela_.getBoundingClientRect();
@@ -88,14 +89,13 @@ class Input {
                     let x = (e.touches[0].clientX - br.left);
                     let y = (e.touches[0].clientY - br.top);
                     this.initial = [x, y];
-
                 }
             );
             
             this.tela.addEventListener("touchmove",
                 function clicked2(e) {
 
-                    if(!moviment_.game_is_open)
+                    if(!moviment_.game_container_is_open)
                         return;
 
                     var br = tela_.getBoundingClientRect();
@@ -111,7 +111,7 @@ class Input {
             this.tela.addEventListener("touchend",
                 function clicked2(e) {
                     
-                    if(!moviment_.game_is_open)
+                    if(!moviment_.game_container_is_open)
                         return;
 
                     var aux = [this.initial[0] - this.final[0], this.initial[1] - this.final[1]];
@@ -133,17 +133,12 @@ class Input {
             );
         //
 
-        
-        console.log('eventos adicionados');
     }
 
     input_teclado (param) {
 
         let input = [0,0];
 
-        
-        console.log('input_teclado');
-    
         if(!this.moviment.game_container_is_open)
             return
     
@@ -175,8 +170,7 @@ class Input {
             default:
                 return;
         }
-    
-        console.log(input);
+        
         this.moviment.move_continuous(input);
     }
 
@@ -205,8 +199,6 @@ class Moviment {
 
     async #AllowToCastView() {
 
-        //console.log("chegou");
-
         if (this.cast_view == 0)
             console.log('bloqueou');
 
@@ -220,7 +212,6 @@ class Moviment {
         if (this.cast_view == 0)
             console.log('liberou');
 
-        //console.log('saiu');
         
     }
 
@@ -238,8 +229,9 @@ class Moviment {
         this.y = Number(7);
         
         this.player_element.style.transition = 'none';
-        this.player_element.style.left = `${this.x_cordinate * this.cellSize}px`;
-        this.player_element.style.top  = `${this.y_cordinate * this.cellSize}px`;
+        const formated_pos = this.#formate_pos(this.x_cordinate, this.y_cordinate);
+        this.player_element.style.left = formated_pos.x;
+        this.player_element.style.top  = formated_pos.y;
     }
 
     move_to(direc) {
@@ -283,9 +275,6 @@ class Moviment {
 
     teleport_to(index, scroll_view) {
 
-        //if(this.cast_view > 0)
-        //    return;
-
         if(this.y_cordinate == Math.floor(index/this.x) & this.x_cordinate == index%this.x)
             return;
 
@@ -298,10 +287,21 @@ class Moviment {
         this.x_cordinate = index%this.x;
         
         this.player_element.style.transition = 'none';
-        this.player_element.style.left = `${this.x_cordinate * this.cellSize}px`;
-        this.player_element.style.top  = `${this.y_cordinate * this.cellSize}px`;
+        const formated_pos = this.#formate_pos(this.x_cordinate, this.y_cordinate);
+        this.player_element.style.left = formated_pos.x;
+        this.player_element.style.top  = formated_pos.y;
 
         this.#refresh_gui(scroll_view);
+    }
+
+    #formate_pos(x, y) {
+        const px = `${x * 100/5}%`
+        const py = `${y * 100/7}%`
+
+        return{
+            'x': px,
+            'y': py
+        };
     }
 
     #player_colors(index) {
@@ -457,8 +457,10 @@ class Moviment {
                     this.player_element.style.animation = `${this.#direc_to_string(direc)} ${aux*70}ms linear`;
                     
                     // PLAYER POSITION
-                    this.player_element.style.left = `${this.x_cordinate * this.cellSize}px`;
-                    this.player_element.style.top  = `${this.y_cordinate * this.cellSize}px`;
+                    const formated_pos = this.#formate_pos(this.x_cordinate, this.y_cordinate);
+                    this.player_element.style.left = formated_pos.x;
+                    this.player_element.style.top  = formated_pos.y;
+                    
                     
                     // CAST WHERE THE PLAYER IS LANDING
                     this.#refresh_gui(true);
@@ -498,10 +500,8 @@ class Moviment {
 
         document.documentElement.style.setProperty('--game-size', container_width);
         
-        if(to_open == null || this.game_container_is_open == to_open){
-            console.log('return', this.game_container_is_open, to_open)
+        if(to_open == null || this.game_container_is_open == to_open)
             return;
-        }
 
         if(to_open) {
             game_container.style.animation = 'abrir_game 400ms ease-out forwards';
@@ -513,7 +513,6 @@ class Moviment {
         }
 
         this.game_container_is_open = to_open;
-        console.log('end of function', this.game_container_is_open, to_open)
     }
 
     #SetClickEvents(){
@@ -522,10 +521,20 @@ class Moviment {
 
         const criar = (top, left, pos, boardd) => {
             let a = boardd.appendChild(document.createElement("button"));
-            a.addEventListener('click', (event) => { this.teleport_to(pos, true); }, false);
+            const touch = this.tela;
+
+            a.addEventListener('click', (event) => { 
+                event.preventDefault();
+                touch.Click();
+                
+                this.teleport_to(pos, true);
+            }, false);
+
             a.classList.add("atalho");
-            a.style.top = `${top * this.cellSize}px`; //top
-            a.style.left = `${left * this.cellSize}px`; //left
+
+            const formated_pos = this.#formate_pos(left, top);
+            a.style.left = formated_pos.x; //left
+            a.style.top = formated_pos.y; //top
         };
         
         criar(0, 0,  0, board); // 0
