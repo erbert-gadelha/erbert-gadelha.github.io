@@ -35,13 +35,12 @@ class Queue {
 
 class Input {    
     
-    constructor(_moviment) {
-        
+    constructor(moviment) {
         this.initial = [0,0]
         this.final = [0,0];
 
         this.tela = document.getElementById("touchTarget");
-        this.moviment = _moviment;
+        this.moviment = moviment;
 
         this.adicionar_eventos();
     }
@@ -50,8 +49,6 @@ class Input {
 
         //  EVENTOS TECLADO
             document.addEventListener('keydown', (event) => {
-                //window.alert(event);
-
                 if([37,38,39,40].indexOf(event.keyCode) > -1)
                     event.preventDefault();                
 
@@ -135,13 +132,19 @@ class Input {
                 }
             );
         //
+
+        
+        console.log('eventos adicionados');
     }
 
     input_teclado (param) {
 
         let input = [0,0];
+
+        
+        console.log('input_teclado');
     
-        if(!this.moviment.game_is_open)
+        if(!this.moviment.game_container_is_open)
             return
     
         switch(param) {
@@ -173,6 +176,7 @@ class Input {
                 return;
         }
     
+        console.log(input);
         this.moviment.move_continuous(input);
     }
 
@@ -183,10 +187,12 @@ class Moviment {
     constructor() {    
         this.x_cordinate = 0;
         this.y_cordinate = 0;
-        this.game_is_open = true;
+        this.game_container_is_open = true;
         
         this.player_element = document.querySelector('.player1');
         document.getElementById('arrow').style.transform = 'scale(1, 1)';
+
+        this.cellSize = 45;
       
         this.#SetColliders();
         this.#SetClickEvents();
@@ -232,8 +238,8 @@ class Moviment {
         this.y = Number(7);
         
         this.player_element.style.transition = 'none';
-        this.player_element.style.left = (this.x_cordinate * 50) + 'px';
-        this.player_element.style.top  = (this.y_cordinate * 50) + 'px';
+        this.player_element.style.left = `${this.x_cordinate * this.cellSize}px`;
+        this.player_element.style.top  = `${this.y_cordinate * this.cellSize}px`;
     }
 
     move_to(direc) {
@@ -292,8 +298,8 @@ class Moviment {
         this.x_cordinate = index%this.x;
         
         this.player_element.style.transition = 'none';
-        this.player_element.style.left = (this.x_cordinate * 50) + 'px';
-        this.player_element.style.top  = (this.y_cordinate * 50) + 'px';
+        this.player_element.style.left = `${this.x_cordinate * this.cellSize}px`;
+        this.player_element.style.top  = `${this.y_cordinate * this.cellSize}px`;
 
         this.#refresh_gui(scroll_view);
     }
@@ -354,8 +360,6 @@ class Moviment {
     }
 
     #scroll_to (class_name) {
-        //if(this.cast_view > 0)
-        //    return;
 
         const element = document.querySelector(`.${class_name}`);
 
@@ -370,9 +374,7 @@ class Moviment {
         else
             element.scrollIntoView({ behavior: 'smooth', block: block});
 
-
         this.#AllowToCastView();
-        
     }
 
     #refresh_gui(scroll_view) {
@@ -446,19 +448,17 @@ class Moviment {
                     aux+=2;
                     
                     // PLAYER TRANSITION
-                    this.player_element.style.transition = (aux*50) + 'ms ease-out all';
+                    this.player_element.style.transition = (aux*this.cellSize) + 'ms ease-out all';
                     
                     document.documentElement.style.setProperty('--anim-shrink', (1-aux/20));
                     document.documentElement.style.setProperty('--anim-grow', (1+aux/20));
                     
-                    
-
                     // PLAYER ANIMATION
                     this.player_element.style.animation = `${this.#direc_to_string(direc)} ${aux*70}ms linear`;
                     
                     // PLAYER POSITION
-                    this.player_element.style.left = `${this.x_cordinate * 50}px`;
-                    this.player_element.style.top  = `${this.y_cordinate * 50}px`;
+                    this.player_element.style.left = `${this.x_cordinate * this.cellSize}px`;
+                    this.player_element.style.top  = `${this.y_cordinate * this.cellSize}px`;
                     
                     // CAST WHERE THE PLAYER IS LANDING
                     this.#refresh_gui(true);
@@ -485,45 +485,35 @@ class Moviment {
             return 'cima';
     }
 
-    open_board(open) {
-    
-        let aux1 = document.querySelector('.game');
-        
-        if(open) {  // FOCA NO GAME
-            
-            if(this.game_is_open == open) 
-                aux1.style.marginLeft = '0';
-            else
-                aux1.style.animation = 'abrir_game 400ms ease-out forwards';
+    open_game_container(to_open) {
 
+        let game_container = document.querySelector('.game');
+
+        let container_width;
+        if(window.innerWidth > 900) {
+            container_width = window.getComputedStyle(document.documentElement).getPropertyValue("--game-max-size");
+        } else {
+            container_width = window.getComputedStyle(document.documentElement).getPropertyValue("--game-min-size");
+        }
+
+        document.documentElement.style.setProperty('--game-size', container_width);
+        
+        if(to_open == null || this.game_container_is_open == to_open){
+            console.log('return', this.game_container_is_open, to_open)
+            return;
+        }
+
+        if(to_open) {
+            game_container.style.animation = 'abrir_game 400ms ease-out forwards';
             document.getElementById('arrow').style.transform = 'scale(1, 1)';
         }
-        else {// FOCA NO CONTAINER
-            
-
-            if(this.game_is_open == open) {
-                // SE TELA TIVE ESPACO
-                if(window.innerWidth > 900) {
-                    aux1.style.animation = 'none';
-                    aux1.style.marginLeft = 'calc( 10px - var(--game-max-size))';
-                }
-                else {
-                    aux1.style.animation = 'none';
-                    aux1.style.marginLeft = 'calc( 10px - var(--game-min-size))';
-                }
-
-            } else {
-                // SE TELA TIVE ESPACO
-                if(window.innerWidth > 900) 
-                    aux1.style.animation = 'fechar_game_1 400ms ease-out forwards';
-                else
-                    aux1.style.animation = 'fechar_game_2 400ms ease-out forwards';
-            }
-
+        else {
+            game_container.style.animation = 'fechar_game 400ms ease-out forwards';
             document.getElementById('arrow').style.transform = 'scale(-1, 1)';
         }
 
-        this.game_is_open = open;
+        this.game_container_is_open = to_open;
+        console.log('end of function', this.game_container_is_open, to_open)
     }
 
     #SetClickEvents(){
@@ -534,16 +524,16 @@ class Moviment {
             let a = boardd.appendChild(document.createElement("button"));
             a.addEventListener('click', (event) => { this.teleport_to(pos, true); }, false);
             a.classList.add("atalho");
-            a.style.top = top;
-            a.style.left = left;
+            a.style.top = `${top * this.cellSize}px`; //top
+            a.style.left = `${left * this.cellSize}px`; //left
         };
         
-        criar("  0px","  0px",  0, board); // 0
-        criar(" 50px","100px",  7, board); // 1
-        criar(" 50px","200px",  9, board); // 2
-        criar("200px","200px", 24, board); // 3   
-        criar("250px","  0px", 25, board); // 4
-        criar("300px","200px", 34, board); // 5
+        criar(0, 0,  0, board); // 0
+        criar(1, 2,  7, board); // 1
+        criar(1, 4,  9, board); // 2
+        criar(4,4, 24, board); // 3   
+        criar(5,0, 25, board); // 4
+        criar(6,4, 34, board); // 5
     }
 
 }
@@ -551,12 +541,13 @@ class Moviment {
 const moviment = new Moviment();
 const input = new Input(moviment);
 //const game = document.getElementById("game");
+moviment.open_game_container(null);
 
 document.getElementById('colapse_button').addEventListener('click', (event) => {
-    moviment.open_board(!moviment.game_is_open);
+    moviment.open_game_container(!moviment.game_container_is_open);
 }, false);
 window.addEventListener('resize', function(event) {
-    moviment.open_board(moviment.game_is_open);
+    moviment.open_game_container(null);
 });
 
 //moviment.open_board(true);
@@ -724,14 +715,5 @@ slider_button.forEach((button, index) => {
     const slider_container = document.getElementById('project_slider');
     const offset = ((index*2)-1);
 
-    button.addEventListener('click', () => {
-        
-        slider_container.scrollBy({ left: ((266) * offset), behavior: 'smooth' });
-
-        /*
-            const slide_view_width = slider_container.getBoundingClientRect().width;
-            slider_container.scrollBy({ left: (slide_view_width * offset), behavior: 'smooth' });
-        */
-
-    }, false)
+    button.addEventListener('click', () => slider_container.scrollBy({ left: (243 * offset), behavior: 'smooth' }));
 });

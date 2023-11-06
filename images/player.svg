@@ -1,7 +1,7 @@
 
 <svg xmlns="http://www.w3.org/2000/svg" width="50px" height="50px" version="1.1" viewBox="0 0 3490 3490" xmlns:xlink="http://www.w3.org/1999/xlink">
         <g>
-            <rect class="fil0"  fill="#F0BE09" stroke="black" stroke-width= "100px" x="573" y="726" width="2191" height="2191" rx="522" ry="522"/>
-            <path class="fil1" fill="#FFD22E"  stroke="black" stroke-width= "100px"  d="M1095 726l1147 0c287,0 522,235 522,522l0 1148c0,143 -58,274 -153,368l-1885 -1885c95,-94 225,-153 369,-153z"/>
+            <rect class="fil0"  fill="#F0BE09" stroke="none"  x="573" y="726" width="2191" height="2191" rx="522" ry="522"/>
+            <path class="fil1" fill="#FFD22E"  stroke="none"  d="M1095 726l1147 0c287,0 522,235 522,522l0 1148c0,143 -58,274 -153,368l-1885 -1885c95,-94 225,-153 369,-153z"/>
         </g>
 </svg>
