@@ -45,8 +45,8 @@ body {
   display: flex;
   flex-direction: row;
   overflow: auto;
-  height: 100%;
-  max-width: 100vw;
+  width: 100vw;
+  height: 100vh;
 }
 
 .secao:not(:first-of-type):not(:last-of-type) {
@@ -111,6 +111,7 @@ section:nth-of-type(5)::before {
 #container {
   flex: 1;
   width: 100%;
+  max-height: 100%;
   overflow-x: hidden;
   overflow-y: auto;
   background-color: var(--background-color);
@@ -130,18 +131,19 @@ section:nth-of-type(5)::before {
   color: white;
   background: #FFD22E;
 }
-#tutorial .t1 {
+#tutorial #t1 {
+  display: none;
   color: var(--medium-grey);
 }
-#tutorial .t1 h1 {
+#tutorial #t1 h1 {
   font-size: min(2vw, 30px);
 }
-#tutorial .t1 #grid div {
+#tutorial #t1 #grid div {
   display: flex;
   justify-content: center;
   align-items: center;
 }
-#tutorial .t1 #grid span {
+#tutorial #t1 #grid span {
   margin: 3px;
   width: 56px;
   height: 56px;
@@ -153,22 +155,22 @@ section:nth-of-type(5)::before {
   border: var(--medium-grey) solid 8px;
   border-radius: 15px;
 }
-#tutorial .t2 {
+#tutorial #t2 {
   display: none;
-  height: 100%;
   flex-direction: column;
-  left: -10px;
-  gap: 25px;
-  padding-right: 10px;
-  padding-left: 10px;
-  text-align: center;
-  margin-top: -90px;
-  margin-left: -50px;
+  margin: auto;
   color: var(--medium-grey);
 }
-#tutorial .t2 .touch {
-  display: block;
+#tutorial #t2 svg {
   margin: auto;
+  width: 16rem;
+  height: 16rem;
+}
+#tutorial #t2 h2 {
+  margin: auto;
+  margin-top: -2rem;
+  text-align: center;
+  max-width: 30rem;
 }
 
 #info {
@@ -547,11 +549,6 @@ section:nth-of-type(5)::before {
     background-color: var(--deep-grey);
   }
 }
-/*@media screen and (max-width: 630px) {
-  .tools_logos {
-    grid-template-columns: repeat(2, 1fr) !important;
-  }
-}*/
 @media screen and (max-width: 900px) {
   body {
     background-color: var(--deep-grey);
@@ -574,13 +571,16 @@ section:nth-of-type(5)::before {
 .game {
   display: flex;
   z-index: 1000;
-  min-height: 100vh;
+  height: 100%;
   width: var(--game-size);
   background-color: var(--deep-grey);
   align-items: center;
   flex-direction: column;
   justify-content: center;
   margin-left: 0;
+  /*.map {
+    background-color: #1b77f3;
+  }*/
 }
 .game #touchTarget {
   position: absolute;

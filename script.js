@@ -1,9 +1,13 @@
 //import Moviment from "./scripts/Moviment.js";
 //import Input from "./scripts/Input.js";
 
-if(navigator.userAgent.includes("Android")) {
-    //document.getElementById('game').style.display = 'none';
-    document.querySelector('.tutorial').style.display = 'none';
+if(navigator.userAgent.includes("Android") | navigator.userAgent.includes("iPhone")) {
+    document.getElementById('t2').style.display = 'flex';
+
+    document.body.style.height = 'unset';
+    document.body.style.maxHeight = '100%';
+} else {
+    document.getElementById('t1').style.display = 'grid';
 }
 
 class Queue {
@@ -524,9 +528,6 @@ class Moviment {
             const touch = this.tela;
 
             a.addEventListener('click', (event) => { 
-                event.preventDefault();
-                touch.Click();
-                
                 this.teleport_to(pos, true);
             }, false);
 
