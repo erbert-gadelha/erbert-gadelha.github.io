@@ -390,6 +390,13 @@ section:nth-of-type(5)::before {
   max-width: 374px;
   width: 40%;
   height: 110px;
+  transition-property: color background-color;
+  transition-duration: 200ms;
+  transition-timing-function: ease;
+}
+#formacoes #cards .formacao:hover {
+  background-color: rgba(240, 99, 99, 0.314);
+  color: white;
 }
 
 #skills {
@@ -418,18 +425,18 @@ section:nth-of-type(5)::before {
   font-size: 1.4em;
 }
 #skills #div_skills {
-  display: block;
+  display: flex;
+  flex-direction: column;
   width: 100%;
+  gap: 16px;
 }
 #skills #div_skills .tools_logos {
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
+  display: grid;
   gap: 10px;
-  width: -moz-fit-content;
-  width: fit-content;
-  padding: 16px;
-  margin: auto;
+  grid-template-columns: repeat(auto-fit, 140px); /* Ajusta automaticamente as colunas */
+  align-items: center;
+  justify-content: center;
+  width: 100%;
 }
 #skills #div_skills .tools_logos .skills_container {
   display: flex;
@@ -449,6 +456,15 @@ section:nth-of-type(5)::before {
   border: var(--deep-grey) 1px solid;
   border-radius: 10px;
   position: relative;
+  transition-property: color background-color;
+  transition-duration: 200ms;
+  transition-timing-function: ease;
+  transition-delay: 300ms;
+}
+#skills #div_skills .skill:hover {
+  transition-delay: 0ms;
+  background-color: rgba(235, 99, 240, 0.314);
+  color: white;
 }
 #skills #div_skills .skill svg {
   transform: scale(0.9);

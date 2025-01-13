@@ -619,7 +619,10 @@ let drag = new DragToScroll('project_slider');
 let projetos = document.querySelectorAll(".projeto");
 
 
-const projetos_ = ['projeto_dot_collider.html', 'projeto_mesh_creator.html', 'projeto_isso-e-um-cururu.html', 'projeto_unbeing.html', 'projeto_go-floresta.html', 'projeto_nassau.html'];
+const projetos_ = ['projeto-pagamento-de-carnes.html', 'projeto-raytracer.html', 'projeto_isso-e-um-cururu.html', 'projeto_unbeing.html', 'projeto_go-floresta.html', 'projeto_nassau.html'];
+
+
+
 
 for (let index = 0; index < projetos.length; index++) {
     const element = projetos[index];
@@ -659,7 +662,7 @@ function loadHtml(id, filename) {
     
 
     //fetch(`https://erbert-gadelha.github.io/meu-site/${filename}`)
-    fetch(`./${filename}`)
+    fetch(`/projects/${filename}`)
     .then(response => response.text())
     .then(htmlData => {
         element.innerHTML = htmlData;

@@ -474,6 +474,16 @@ section:nth-of-type(5)::before{
       max-width: 374px;
       width: 40%;
       height: 110px;
+
+
+      transition-property: color background-color;
+      transition-duration: 200ms;
+      transition-timing-function: ease;
+
+      &:hover {
+        background-color: rgba(240, 99, 99, 0.314);
+        color: white;
+      }
     }
   }
 }
@@ -505,20 +515,19 @@ section:nth-of-type(5)::before{
   }
 
   #div_skills {
-    display: block;
+    display: flex;
+    flex-direction: column;
     width: 100%;
-
+    gap: 16px;
 
     .tools_logos {
-
-      display: flex;
-      flex-direction: row;
-      flex-wrap: wrap;
+      display: grid;
       gap: 10px;
+      grid-template-columns: repeat(auto-fit, 140px); /* Ajusta automaticamente as colunas */
+      align-items: center;
+      justify-content: center;
+      width: 100%;
 
-      width: fit-content;
-      padding: 16px;
-      margin: auto;
 
       .skills_container {
         display: flex;
@@ -545,6 +554,17 @@ section:nth-of-type(5)::before{
 
       border-radius: 10px;
       position: relative;
+
+      transition-property: color background-color;
+      transition-duration: 200ms;
+      transition-timing-function: ease;
+      transition-delay: 300ms;
+
+      &:hover {
+        transition-delay: 0ms;
+        background-color: rgba(235, 99, 240, 0.314);
+        color: white;
+      }
 
 
       svg {
