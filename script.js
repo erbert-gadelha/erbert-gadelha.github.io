@@ -619,7 +619,7 @@ let drag = new DragToScroll('project_slider');
 let projetos = document.querySelectorAll(".projeto");
 
 
-const projetos_ = ['projeto-pagamento-de-carnes.html', 'projeto-raytracer.html', 'projeto_isso-e-um-cururu.html', 'projeto_unbeing.html', 'projeto_go-floresta.html', 'projeto_nassau.html'];
+const projetos_ = ['projeto-pagamento-de-carnes.html', 'projeto-raytracer.html', 'projeto-discuversa.html', 'projeto_isso-e-um-cururu.html', 'projeto_unbeing.html', 'projeto_go-floresta.html', 'projeto_nassau.html'];
 
 
 

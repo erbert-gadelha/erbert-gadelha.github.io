@@ -444,6 +444,13 @@ section:nth-of-type(5)::before {
   gap: 10px;
   margin: auto;
 }
+#skills #div_skills:has(.skill:hover) .skill:not(:hover) {
+  transform: scale(0.95);
+  opacity: 0.7;
+}
+#skills #div_skills:has(.skill:hover) .skill:hover {
+  transform: scale(1.05);
+}
 #skills #div_skills .skill {
   display: flex;
   justify-content: center;
@@ -459,12 +466,12 @@ section:nth-of-type(5)::before {
   transition-property: color background-color;
   transition-duration: 200ms;
   transition-timing-function: ease;
-  transition-delay: 300ms;
-}
-#skills #div_skills .skill:hover {
-  transition-delay: 0ms;
-  background-color: rgba(235, 99, 240, 0.314);
-  color: white;
+  /*transition-delay: 300ms;*/
+  /*&:hover {
+    transition-delay: 0ms;
+    background-color: rgba(235, 99, 240, 0.314);
+    color: white;
+  }*/
 }
 #skills #div_skills .skill svg {
   transform: scale(0.9);

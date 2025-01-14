@@ -537,6 +537,17 @@ section:nth-of-type(5)::before{
       }
     }
 
+
+    &:has(.skill:hover) {
+      .skill:not(:hover) {
+        transform: scale(.95);
+        opacity: .7;
+      }
+      .skill:hover {
+        transform: scale(1.05);
+      }
+    }
+
     .skill {
       display: flex;
 
@@ -558,13 +569,13 @@ section:nth-of-type(5)::before{
       transition-property: color background-color;
       transition-duration: 200ms;
       transition-timing-function: ease;
-      transition-delay: 300ms;
+      /*transition-delay: 300ms;*/
 
-      &:hover {
+      /*&:hover {
         transition-delay: 0ms;
         background-color: rgba(235, 99, 240, 0.314);
         color: white;
-      }
+      }*/
 
 
       svg {
